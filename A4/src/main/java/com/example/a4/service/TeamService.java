@@ -59,8 +59,8 @@ public class TeamService {
         return "Team " + id + " deleted.\n";
     }
 
-    public Team updateTeam(Team team) {
-        Team current = repository.findById(team.getTid()).orElse(null);
+    public Team updateTeam(Team team, int id) {
+        Team current = repository.findById(id).orElse(null);
 
         current.setName(team.getName());
         current.setTop(team.getTop());

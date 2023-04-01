@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin("http://localhost:3000")
 public class FanController {
     @Autowired
     private FanService service;

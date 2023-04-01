@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin
 public class TeamController {
     @Autowired
     private TeamService service;
@@ -27,6 +27,14 @@ public class TeamController {
     @Autowired
     private FanService fanService;
 
+    @CrossOrigin
+    @PostMapping("/addTeam")
+    public Team addOneTeam(@RequestBody Team team) {
+        team.setLeague(null);
+        return service.saveTeam(team);
+    }
+
+    @CrossOrigin
     @PostMapping("/league/{id}/addTeam")
     public Team addTeam(@PathVariable int id, @RequestBody Team team) {
         League league = leagueService.getLeagueById(id);
@@ -34,34 +42,50 @@ public class TeamController {
         return service.saveTeam(team);
     }
 
+    @CrossOrigin
     @PostMapping("/league/{id}/addTeams")
     public List<Team> addTeams(@PathVariable int id, @RequestBody List<Team> teams) {
         League league = leagueService.getLeagueById(id);
-        for(Team team : teams)
-            team.setLeague(league);
-        return service.saveTeams(teams);
+        List<Team> myTeams = service.getTeams();
+        List<Team> newTeams = new ArrayList<>();
+        for(Team team : teams) {
+            for(Team myTeam : myTeams){
+                if(Objects.equals(myTeam.getName(), team.getName())){
+                    team.setLeague(league);
+                    newTeams.add(team);
+                    break;
+                }
+            }
+        }
+        league.setTeams(newTeams);
+        return service.saveTeams(newTeams);
     }
 
+    @CrossOrigin
     @GetMapping("/teams")
     public List<Team> findAllTeams() {
         return service.getTeams();
     }
 
+    @CrossOrigin
     @GetMapping("/team/{id}")
     public Team findTeamById(@PathVariable int id) {
         return service.getTeamById(id);
     }
 
-    @PutMapping("/updateTeam")
-    public Team updateTeam(@RequestBody Team team) {
-        return service.updateTeam(team);
+    @CrossOrigin
+    @PutMapping("/updateTeam/{id}")
+    public Team updateTeam(@RequestBody Team team, @PathVariable int id) {
+        return service.updateTeam(team, id);
     }
 
+    @CrossOrigin
     @DeleteMapping("deleteTeam/{id}")
     public String deleteTeam(@PathVariable int id) {
         return service.deleteTeam(id);
     }
 
+    @CrossOrigin
     @GetMapping("/teams/task")
     public List<LeagueIdAndTeams> findAllTeamsTask() {
         List<Team> teams = service.getTeams();
@@ -82,6 +106,7 @@ public class TeamController {
         return ans;
     }
 
+    @CrossOrigin
     @GetMapping("/team/task/{id}")
     public List<LeagueAndTeam> findTeamByIdTask(@PathVariable int id) {
         List<LeagueAndTeam> ans = new ArrayList<>();
