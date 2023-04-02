@@ -9,17 +9,20 @@ import EditTeam from './team/EditTeam';
 import ViewTeam from './team/ViewTeam';
 
 function App() {
+  // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+  const toAddURL = '';
+  
   return (
     <div className="App">
       <Router>
         <Navbar />
 
         <Routes>
-          <Route exact path="/" element={<Home />}></Route>
-          <Route path="/teams" element={<AllTeams />}></Route>
-          <Route exact path="/addTeam" element={<AddTeam />}></Route>
-          <Route exact path="/updateTeam/:id" element={<EditTeam />}></Route>
-          <Route exact path="/viewTeam/:id" element={<ViewTeam />}></Route>
+          <Route exact path={"/"+toAddURL} element={<Home />}></Route>
+          <Route path={"/" + toAddURL +  "teams"} element={<AllTeams />}></Route>
+          <Route exact path={"/" + toAddURL +  "addTeam"} element={<AddTeam />}></Route>
+          <Route exact path={"/" + toAddURL + "updateTeam/:id"} element={<EditTeam />}></Route>
+          <Route exact path={"/" + toAddURL + "viewTEam/:id"} element={<ViewTeam />}></Route>
           {/* <Route exact path="/leagues" element={<AllLeagues />}></Route> */}
           {/* <Route exact path="/addLeague" element={<AddLeague />}></Route> */}
           {/* <Route exact path="/fans" element={<AllFans />}></Route> */}
