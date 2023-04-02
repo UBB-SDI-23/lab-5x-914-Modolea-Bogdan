@@ -4,6 +4,9 @@ import { Link, useParams } from 'react-router-dom'
 
 export default function AllTeams() {
   
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
+
     const[teams, setTeams] = useState([]);
 
     const {id} = useParams();
@@ -53,8 +56,8 @@ export default function AllTeams() {
                                 <td>{team.bot}</td>
                                 <td>{team.support}</td>
                                 <td>
-                                    <Link className='btn btn-primary mx-1' to={`/viewTeam/${team.tid}`}>View</Link>
-                                    <Link className='btn btn-outline-primary mx-1' to={`/updateTeam/${team.tid}`} >Edit</Link>
+                                    <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.tid}`}>View</Link>
+                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.tid}`} >Edit</Link>
                                     <button className='btn btn-danger mx-1' onClick={()=>deleteTeam(team.tid)}>Delete</button>
                                 </td>
                             </tr>

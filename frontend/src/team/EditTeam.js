@@ -4,6 +4,9 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 
 export default function EditTeam() {
 
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
+
     let navigate = useNavigate();
 
     const {id} = useParams()
@@ -70,7 +73,7 @@ export default function EditTeam() {
                         <input type={'text'} className='form-control' name='support' placeholder='Enter Support Name' value={support} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update Team</button>
-                    <Link className='btn btn-outline-danger mx-2' to="/teams">Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "teams"}>Cancel</Link>
                 </form>
             </div> 
         </div>

@@ -9,8 +9,8 @@ import EditTeam from './team/EditTeam';
 import ViewTeam from './team/ViewTeam';
 
 function App() {
-  const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-  // const toAddURL = '';
+  // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+  const toAddURL = '';
   
   return (
     <div className="App">

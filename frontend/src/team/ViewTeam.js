@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 export default function ViewTeam() {
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
 
     const [team, setTeam] = useState({
         name: '',
@@ -42,7 +44,7 @@ export default function ViewTeam() {
                         </ul>
                     </div>
                 </div>
-                <Link className='btn btn-primary my-2' to="/teams">Back</Link>
+                <Link className='btn btn-primary my-2' to={"/" + toAddURL + "teams"}>Back</Link>
             </div>
         </div>
     </div>
