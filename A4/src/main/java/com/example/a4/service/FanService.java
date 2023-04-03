@@ -1,12 +1,14 @@
 package com.example.a4.service;
 
-import com.example.a4.dto.FansWithTeams;
-import com.example.a4.dto.TeamsAndAge;
+import com.example.a4.dto.*;
 import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.Team;
+import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.FanOfTeamRepository;
 import com.example.a4.repository.FanRepository;
+import com.example.a4.repository.TeamRepository;
+import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,111 +19,113 @@ import java.util.Map.Entry;
 
 public class FanService {
     @Autowired
-    private FanRepository repository;
+    private FanRepository fanRepository;
     @Autowired
-    private FanOfTeamRepository fanOfTeamRepository;
+    private TeamRepository teamRepository;
 
-    public Fan saveFan(Fan fan) {
-        return repository.save(fan);
+    public Fan saveFan(FanRequest fanRequest) {
+        Fan newFan = new Fan();
+        newFan.setName(fanRequest.getName());
+        newFan.setNationality(fanRequest.getNationality());
+        newFan.setOccupation(fanRequest.getOccupation());
+        newFan.setAge(fanRequest.getAge());
+        newFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
+
+        return fanRepository.save(newFan);
     }
 
-    public List<Fan> saveFans(List<Fan> fans) {
-        return repository.saveAll(fans);
+    public List<FanGetAll> getFans() throws EntityNotFoundException {
+        List<Fan> fans = fanRepository.findAll();
+        if (fans.isEmpty())
+            throw new EntityNotFoundException("No fans found!");
+
+        return ObjectMapper.mapAll(fans, FanGetAll.class);
     }
 
-    public List<Fan> getFans() {
-        return repository.findAll();
+    public FanByID getFanById(int id) throws EntityNotFoundException {
+        Fan fan = fanRepository.findById(id).orElse(null);
+        if (fan == null)
+            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
+
+        return new FanByID(
+                fan.getFid(),
+                fan.getName(),
+                fan.getAge(),
+                fan.getNationality(),
+                fan.getOccupation(),
+                fan.getPlaceOfBirth(),
+                fan.getSupporter()
+        );
     }
 
-    public Fan getFanById(int id) {
-        return repository.findById(id).orElse(null);
+    public Fan updateFan(int id, FanRequest fanRequest) throws EntityNotFoundException {
+        Fan existingFan = fanRepository.findById(id).orElse(null);
+        if (existingFan == null)
+            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
+
+        existingFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
+        existingFan.setAge(fanRequest.getAge());
+        existingFan.setName(fanRequest.getName());
+        existingFan.setNationality(fanRequest.getNationality());
+        existingFan.setOccupation(fanRequest.getOccupation());
+
+        return fanRepository.save(existingFan);
     }
 
-    public String deleteFan(int id) {
-        repository.deleteById(id);
-        return "Fan " + id + " deleted.\n";
+    public void deleteFan(int id) throws EntityNotFoundException {
+        Fan existingFan = fanRepository.findById(id).orElse(null);
+        if (existingFan == null)
+            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
+
+        fanRepository.delete(existingFan);
     }
 
-    public Fan updateFan(Fan fan) {
-        Fan current = repository.findById(fan.getFid()).orElse(null);
+    public void deleteFanOfTeam(int fanID, int teamID) throws EntityNotFoundException {
+        Fan existingFan = fanRepository.findById(fanID).orElse(null);
+        if (existingFan == null)
+            throw new EntityNotFoundException(String.format("No fan found with id %d", fanID));
 
-        current.setName(fan.getName());
-        current.setAge(fan.getAge());
-        current.setOccupation(fan.getOccupation());
-        current.setNationality(fan.getNationality());
-        current.setPlaceOfBirth(fan.getPlaceOfBirth());
-        return repository.save(current);
+        Team existingTeam = teamRepository.findById(teamID).orElse(null);
+        if (existingTeam == null)
+            throw new EntityNotFoundException(String.format("No team found with id %d", teamID));
+
+        FanOfTeam existingFanOfTeam = existingFan.getSupporter().stream()
+                .filter(fanOfTeam -> fanOfTeam.getTeam().getTid() == teamID)
+                .filter(fanOfTeam -> fanOfTeam.getFan().getFid() == fanID)
+                .findFirst()
+                .orElse(null);
+
+        if (existingFanOfTeam == null)
+            throw new EntityNotFoundException(String.format("Fan with id %d doesn't support team with id %d", fanID, teamID));
+
+        existingFan.getSupporter().remove(existingFanOfTeam);
+        fanRepository.save(existingFan);
     }
 
-    public List<Fan> filterFansByAge(int age) {
-        return repository.filterAll();
+    public List<FanGetAll> filterFansByAge(int age) throws EntityNotFoundException {
+        List<FanGetAll> fans = fanRepository.filterFansByAge(age);
+        if (fans.isEmpty())
+            throw new EntityNotFoundException(String.format("No fan with age greater than %d was found!", age));
+
+        return ObjectMapper.mapAll(fans, FanGetAll.class);
     }
 
-    public String deleteFanOfTeam(int id) {
-        if (fanOfTeamRepository.findById(id).isPresent()) {
-            int fid = fanOfTeamRepository.findById(id).get().getFan().getFid();
-            fanOfTeamRepository.deleteById(id);
-            return "Fan with id " + fid + " is no longer a supporter";
-        }
-        return "Not Found";
-    }
+    public Fan addFanToTeam(int id, FanOfTeam fan) throws EntityNotFoundException {
+        Fan existingFan = fanRepository.findById(id).orElse(null);
+        if (existingFan == null)
+            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
 
-    public FanOfTeam addFanToTeam(FanOfTeam fan) {
-        return fanOfTeamRepository.save(fan);
-    }
+        Team existingTeam = teamRepository.findById(fan.getTeam().getTid()).orElse(null);
+        if (existingTeam == null)
+            throw new EntityNotFoundException(String.format("No team found with id %d", fan.getTeam().getTid()));
 
-    public Optional<FanOfTeam> getFansOfTeamsByID(int id) {
-        return fanOfTeamRepository.findById(id);
-    }
+        FanOfTeam fanOfTeam = new FanOfTeam();
+        fanOfTeam.setFanSince(fan.getFanSince());
+        fanOfTeam.setOpinion(fan.getOpinion());
+        fanOfTeam.setFan(existingFan);
+        fanOfTeam.setTeam(existingTeam);
 
-    public List<FansWithTeams> getAllFansOfTeams() {
-        List<FansWithTeams> ans = new ArrayList<>();
-        List<FanOfTeam> fanOfTeams = fanOfTeamRepository.findAll();
-        HashMap<Fan, List<Team>> fanAndTeams = new HashMap<>();
-
-        for (FanOfTeam fanOfTeam : fanOfTeams) {
-            Team team = fanOfTeam.getTeam();
-            Fan fan = fanOfTeam.getFan();
-
-            if (fanAndTeams.get(fan) == null) {
-                fanAndTeams.put(fan, new ArrayList<>());
-                fanAndTeams.get(fan).add(team);
-            } else
-                fanAndTeams.get(fan).add(team);
-        }
-
-        for (Entry<Fan, List<Team>> entry : fanAndTeams.entrySet()) {
-            entry.getKey().setSupporter(null);
-            ans.add(new FansWithTeams(entry.getKey(), entry.getValue()));
-        }
-        return ans;
-    }
-
-    public List<TeamsAndAge> getTeamsWithFans(){
-        List<TeamsAndAge> ans = new ArrayList<>();
-        List<FanOfTeam> fanOfTeams = fanOfTeamRepository.findAll();
-        HashMap<Team, List<Fan>> teamsAndFans = new HashMap<>();
-
-        for (FanOfTeam fanOfTeam : fanOfTeams) {
-            Team team = fanOfTeam.getTeam();
-            Fan fan = fanOfTeam.getFan();
-
-            if (teamsAndFans.get(team) == null) {
-                teamsAndFans.put(team, new ArrayList<>());
-                teamsAndFans.get(team).add(fan);
-            } else
-                teamsAndFans.get(team).add(fan);
-        }
-
-        for (Entry<Team, List<Fan>> entry : teamsAndFans.entrySet()) {
-            float avg = 0;
-            for(Fan fan : entry.getValue())
-                avg += fan.getAge();
-            avg /= entry.getValue().size();
-
-            ans.add(new TeamsAndAge(entry.getKey(), avg));
-        }
-
-        return ans;
+        existingFan.getSupporter().add(fanOfTeam);
+        return fanRepository.save(existingFan);
     }
 }

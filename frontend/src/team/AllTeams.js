@@ -4,8 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 
 export default function AllTeams() {
   
-    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    // const toAddURL = '';
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
 
     const[teams, setTeams] = useState([]);
 
@@ -21,7 +21,7 @@ export default function AllTeams() {
     }
   
     const deleteTeam = async(id)=>{
-        await axios.delete(`http://localhost:8080/deleteTeam/${id}`);
+        await axios.delete(`http://localhost:8080/teams/${id}`);
         loadTeams();
     }
 
@@ -56,9 +56,9 @@ export default function AllTeams() {
                                 <td>{team.bot}</td>
                                 <td>{team.support}</td>
                                 <td>
-                                    <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.tid}`}>View</Link>
-                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.tid}`} >Edit</Link>
-                                    <button className='btn btn-danger mx-1' onClick={()=>deleteTeam(team.tid)}>Delete</button>
+                                    <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.id}`}>View</Link>
+                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.id}`} >Edit</Link>
+                                    <button className='btn btn-danger mx-1' onClick={()=>deleteTeam(team.id)}>Delete</button>
                                 </td>
                             </tr>
                         ))

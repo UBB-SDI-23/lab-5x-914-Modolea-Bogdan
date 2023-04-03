@@ -1,13 +1,19 @@
 package com.example.a4.service;
 
+import com.example.a4.dto.LeagueGetAll;
+import com.example.a4.dto.LeagueRequest;
 import com.example.a4.dto.NationalitiesAndLeagues;
+import com.example.a4.dto.TeamAssignLeague;
 import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.FanOfTeamRepository;
 import com.example.a4.repository.FanRepository;
 import com.example.a4.repository.LeagueRepository;
+import com.example.a4.repository.TeamRepository;
+import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,102 +22,84 @@ import java.util.*;
 @Service
 public class LeagueService {
     @Autowired
-    private LeagueRepository repository;
+    private LeagueRepository leagueRepository;
     @Autowired
     private FanOfTeamRepository fanOfTeamRepository;
     @Autowired
     private FanRepository fanRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
-    public League saveLeague(League league) {
-        return repository.save(league);
+    public League saveLeague(LeagueRequest leagueRequest){
+        League newLeague = new League();
+        ObjectMapper.map(leagueRequest, newLeague);
+        return leagueRepository.save(newLeague);
     }
 
-    public List<League> saveLeagues(List<League> leagues) {
-        return repository.saveAll(leagues);
+    public List<LeagueGetAll> getLeagues() throws EntityNotFoundException{
+        List<League> leagues = leagueRepository.findAll();
+        if(leagues.isEmpty())
+            throw new EntityNotFoundException("No league found!");
+
+        return ObjectMapper.mapAll(leagues, LeagueGetAll.class);
     }
 
-    public List<League> getLeaguesWithoutNull() {
-        return repository.findAll();
+    public League getLeagueById(int id) throws EntityNotFoundException{
+        League league = leagueRepository.findById(id).orElse(null);
+        if(league == null)
+            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
+
+        return league;
     }
 
-    public List<League> getLeagues() {
-        return repository.findAll();
+    public League updateLeague(int id, LeagueRequest leagueRequest) throws EntityNotFoundException{
+        League existingLeague = leagueRepository.findById(id).orElse(null);
+        if(existingLeague == null)
+            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
+
+        existingLeague.setAbbreviation(leagueRequest.getAbbreviation());
+        existingLeague.setYear(leagueRequest.getYear());
+        existingLeague.setRegion(leagueRequest.getRegion());
+        existingLeague.setAudience(leagueRequest.getAudience());
+        existingLeague.setBestPlayer(leagueRequest.getBestPlayer());
+
+        return leagueRepository.save(existingLeague);
     }
 
-    public List<League> getLeaguesTask() {
-        List<League> leagues = repository.findAll();
+    public void deleteLeague(int id) throws EntityNotFoundException{
+        League existingLeague = leagueRepository.findById(id).orElse(null);
+        if(existingLeague == null)
+            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
 
-        for(League league : leagues)
-            league.setTeams(null);
+        leagueRepository.delete(existingLeague);
+    }
+
+    public List<NationalitiesAndLeagues> getLeaguesByNations() throws EntityNotFoundException{
+        List<NationalitiesAndLeagues> leagues = leagueRepository.getLeaguesByNations();
+        if(leagues.isEmpty())
+            throw new EntityNotFoundException("No league found!");
 
         return leagues;
     }
 
-    public League getLeagueById(int id) {
-        return repository.findById(id).orElse(null);
-    }
+    public League addTeamListToLeague(int id, List<Integer> teamIDs) throws EntityNotFoundException{
+        League league = leagueRepository.findById(id).orElse(null);
+        if(league == null)
+            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
 
-    public String deleteLeague(int id) {
-        repository.deleteById(id);
-        return "League " + id + " deleted.\n";
-    }
-
-    public League updateLeague(League league) {
-        League current = repository.findById(league.getLid()).orElse(null);
-
-        current.setAbbreviation(league.getAbbreviation());
-        current.setAudience(league.getAudience());
-        current.setTeams(league.getTeams());
-        current.setRegion(league.getRegion());
-        current.setYear(league.getYear());
-        current.setBestPlayer(league.getBestPlayer());
-
-        return repository.save(current);
-    }
-
-    public List<NationalitiesAndLeagues> getTaskReport(){
-        List<League> leagues = repository.findAll();
-        List<FanOfTeam> fansOfTeams = fanOfTeamRepository.findAll();
-        List<Fan> fans = fanRepository.findAll();
-        List<NationalitiesAndLeagues> ans = new ArrayList<>();
-        HashMap<League, Set<Fan>> hm = new HashMap<>();
-        HashMap<League, Set<String>> leagueNationality = new HashMap<>();
-
-
-        for(Fan fan : fans){
-            for(FanOfTeam fanOfTeam : fansOfTeams){
-                if(fan == fanOfTeam.getFan()){
-                    for(League league : leagues){
-                        if(league.getTeams().contains(fanOfTeam.getTeam())){
-                            if(hm.get(league) == null){
-                                hm.put(league, new HashSet<>());
-                                hm.get(league).add(fan);
-                            }
-                            else{
-                                hm.get(league).add(fan);
-                            }
-                        }
-                    }
-                }
-            }
+        List<TeamAssignLeague> teams = new ArrayList<>();
+        List<Team> allTeams = teamRepository.findAll();
+        for(Team team : allTeams) {
+            if (teamIDs.contains(team.getTid()))
+                teams.add(new TeamAssignLeague(team.getTid(), team.getName(), team.getTop(), team.getJungle(), team.getMid(), team.getBot(), team.getSupport()));
         }
 
-        for(Map.Entry<League, Set<Fan>> entry : hm.entrySet()){
-            League league = entry.getKey();
-            Set<Fan> leagueFans = entry.getValue();
-            for(Fan leagueFan : leagueFans){
-                if(leagueNationality.get(league) == null) {
-                    leagueNationality.put(league, new HashSet<>());
-                    leagueNationality.get(league).add(leagueFan.getNationality());
-                }
-                else
-                    leagueNationality.get(league).add(leagueFan.getNationality());
-            }
+        List<Team> mappedTeams = ObjectMapper.mapAll(teams, Team.class);
+        for(Team team : mappedTeams){
+            team.setLeague(league);
+            teamRepository.save(team);
         }
 
-        for(Map.Entry<League, Set<String>> entry : leagueNationality.entrySet())
-            ans.add(new NationalitiesAndLeagues(entry.getKey().getAbbreviation(), entry.getValue().size()));
-
-        return ans;
+        return leagueRepository.save(league);
     }
 }

@@ -11,6 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NationalitiesAndLeagues {
-    String league;
-    int counter;
+    private int lid;
+    private String leagueName;
+    private String region;
+    private long counter;
 }

@@ -1,89 +1,64 @@
 package com.example.a4.controller;
 
+import com.example.a4.dto.LeagueGetAll;
+import com.example.a4.dto.LeagueRequest;
 import com.example.a4.dto.NationalitiesAndLeagues;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.service.LeagueService;
 import com.example.a4.service.TeamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
 @CrossOrigin
+@RestController
+@RequestMapping("/leagues")
 public class LeagueController {
     @Autowired
     private LeagueService service;
-    @Autowired
-    private TeamService teamService;
 
-    @PostMapping("/addLeague")
-    public League addLeague(@RequestBody League league) {
-        return service.saveLeague(league);
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public ResponseEntity<League> addLeague(@RequestBody @Valid LeagueRequest leagueRequest) throws EntityNotFoundException {
+        return new ResponseEntity<>(service.saveLeague(leagueRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping("/addLeagues")
-    public List<League> addLeagues(@RequestBody List<League> leagues) {
-        return service.saveLeagues(leagues);
+    @GetMapping
+    public ResponseEntity<List<LeagueGetAll>> findAllLeagues() throws EntityNotFoundException{
+        return ResponseEntity.ok(service.getLeagues());
     }
 
-    @GetMapping("/leagues")
-    public List<League> findAllLeagues() {
-        return service.getLeagues();
+    @GetMapping("/{leagueID}")
+    public ResponseEntity<League> findLeagueByID(@PathVariable int leagueID) throws EntityNotFoundException{
+        return ResponseEntity.ok(service.getLeagueById(leagueID));
     }
 
-    @GetMapping("/leaguesTask")
-    public List<League> findAllLeaguesTask() {
-        return service.getLeaguesTask();
+    @PutMapping("/{leagueID}")
+    public ResponseEntity<League> updateLeague(@PathVariable int leagueID, @RequestBody @Valid LeagueRequest leagueRequest) throws EntityNotFoundException{
+        return ResponseEntity.ok(service.updateLeague(leagueID, leagueRequest));
     }
 
-    @GetMapping("/league/{id}")
-    public League findLeagueById(@PathVariable int id) {
-        return service.getLeagueById(id);
+    @DeleteMapping("/{leagueID}")
+    public ResponseEntity<Void> deleteLeague(@PathVariable int leagueID) throws EntityNotFoundException{
+        service.deleteLeague(leagueID);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/updateLeague")
-    public League updateLeague(@RequestBody League league) {
-        List<Team> teams = league.getTeams();
-        List<Team> newTeams = new ArrayList<>();
-        int len = teams.size();
-
-        for (Team team : teams) {
-            if (teamService.getTeamByName(team.getName()) == null)
-                return null;
-
-            newTeams.add(team);
-        }
-
-        if (newTeams.size() == len) {
-            for (Team team : newTeams) {
-                int teamID = teamService.getTeamIdByName(team.getName());
-                teamService.deleteTeam(teamID);
-            }
-
-            league.setTeams(newTeams);
-            return service.updateLeague(league);
-        }
-        return null;
+    @GetMapping("/number-of-nations-that-supports-league")
+    public ResponseEntity<List<NationalitiesAndLeagues>> getLeaguesByNations() throws EntityNotFoundException{
+        return ResponseEntity.ok(service.getLeaguesByNations());
     }
 
-    @DeleteMapping("deleteLeague/{id}")
-    public String deleteLeague(@PathVariable int id) {
-        List<Team> teams = service.getLeagueById(id).getTeams();
-        String msg = service.deleteLeague(id);
-
-        for (Team team : teams)
-            team.setLeague(null);
-        teamService.saveTeams(teams);
-
-        return msg;
-    }
-
-
-    @GetMapping("/reportLeagues")
-    public List<NationalitiesAndLeagues> getReport(){
-        return service.getTaskReport();
+    @PostMapping("/{leagueID}/teams")
+    public ResponseEntity<League> addTeamListToLeague(@PathVariable int leagueID, @RequestBody List<Integer> teams) throws EntityNotFoundException{
+        return new ResponseEntity<>(service.addTeamListToLeague(leagueID, teams), HttpStatus.CREATED);
     }
 }

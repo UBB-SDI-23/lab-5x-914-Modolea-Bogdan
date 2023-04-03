@@ -4,8 +4,8 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 
 export default function EditTeam() {
 
-    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    // const toAddURL = '';
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
 
     let navigate = useNavigate();
 
@@ -32,12 +32,12 @@ export default function EditTeam() {
 
     const onSubmit=async(e)=>{
       e.preventDefault();
-      await axios.put(`http://localhost:8080/updateTeam/${id}`, team);
-      navigate("/teams");
+      await axios.put(`http://localhost:8080/teams/${id}`, team);
+      navigate("/" + toAddURL +  "teams");
     };
 
     const loadTeam = async()=>{
-        const result = await axios.get(`http://localhost:8080/team/${id}`);
+        const result = await axios.get(`http://localhost:8080/teams/${id}`);
         setTeam(result.data);
     }
 

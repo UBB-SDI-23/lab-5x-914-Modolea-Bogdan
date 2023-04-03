@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Navbar() {
-  const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-  // const toAddURL = '';
+  // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+  const toAddURL = '';
 
   return (
     <div>
@@ -15,7 +15,7 @@ export default function Navbar() {
                 </button>
 
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "teams"}>Teams</Link>
-                <Link className='btn btn-outline-light'>Leagues</Link>
+                <Link className='btn btn-outline-light' to={"/" + toAddURL + "leagues"}>Leagues</Link>
                 <Link className='btn btn-outline-light'>Fans</Link>
             </div>
         </nav>

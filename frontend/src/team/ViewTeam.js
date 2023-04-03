@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 export default function ViewTeam() {
-    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    // const toAddURL = '';
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
 
     const [team, setTeam] = useState({
         name: '',
@@ -12,7 +12,8 @@ export default function ViewTeam() {
         jungle: '',
         mid: '',
         bot: '',
-        support: ''
+        support: '',
+        league: {}
     });
 
     const {id} = useParams();
@@ -22,7 +23,7 @@ export default function ViewTeam() {
     }, []);
 
     const loadTeam = async()=>{
-        const result = await axios.get(`http://localhost:8080/team/${id}`);
+        const result = await axios.get(`http://localhost:8080/teams/${id}`);
         setTeam(result.data);
     }
 
@@ -33,7 +34,6 @@ export default function ViewTeam() {
                 <h2 className='text-center m-4'>Team Details</h2>
                 <div className='card'>
                     <div className='card-header'>
-                        Team details:
                         <ul className='list-group list-group-flush'>
                             <li className='list-group-item'><b>Team Name: {team.name}</b></li>
                             <li className='list-group-item'><b>Toplaner: {team.top}</b></li>
@@ -41,6 +41,7 @@ export default function ViewTeam() {
                             <li className='list-group-item'><b>Midlaner: {team.mid}</b></li>
                             <li className='list-group-item'><b>Botlaner: {team.bot}</b></li>
                             <li className='list-group-item'><b>Support: {team.support}</b></li>
+                            <li className='list-group-item'><b>League: {team.league.abbreviation}</b></li>
                         </ul>
                     </div>
                 </div>
