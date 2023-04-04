@@ -7,6 +7,9 @@ export default function AddTeam() {
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
 
+    // const serverLink = 'http://localhost:8080/leagues';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
+
     let navigate = useNavigate();
 
     const [league, setLeague] = useState({
@@ -25,7 +28,7 @@ export default function AddTeam() {
 
     const onSubmit=async(e)=>{
       e.preventDefault();
-      await axios.post("http://localhost:8080/leagues", league);
+      await axios.post(serverLink, league);
       navigate("/" + toAddURL +  "leagues");
     };
 

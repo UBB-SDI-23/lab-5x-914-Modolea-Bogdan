@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 export default function Navbar() {
   const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
   // const toAddURL = '';
+  const serverLink = 'http://localhost:8080/';
+    // const serverLink = '';
 
   return (
     <div>

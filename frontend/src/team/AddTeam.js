@@ -9,6 +9,8 @@ export default function AddTeam() {
 
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
+    // const serverLink = 'http://localhost:8080/';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/';
 
     let navigate = useNavigate();
     
@@ -34,7 +36,7 @@ export default function AddTeam() {
     }
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/leagues`)
+        axios.get(serverLink + `leagues`)
         .then(res => {
             const newDict = {};
             const newDict2= {};
@@ -52,7 +54,7 @@ export default function AddTeam() {
       e.preventDefault();
       team.leagueID = mapLeagues[selectedItem].lid;
       console.log(team);
-      await axios.post("http://localhost:8080/teams", team);
+      await axios.post(serverLink + "teams", team);
       navigate("/" + toAddURL +  "teams");
     };
 

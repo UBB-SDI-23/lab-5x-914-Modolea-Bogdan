@@ -7,6 +7,8 @@ export default function AllFans() {
   
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
+    // const serverLink = 'http://localhost:8080/fans';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/fans';
 
     let navigate = useNavigate();
 
@@ -18,12 +20,12 @@ export default function AllFans() {
     }, []);
 
     const loadFans=async()=>{
-        const result = await axios.get("http://localhost:8080/fans");
+        const result = await axios.get(serverLink);
         setFans(result.data);
     }
   
     const deleteFan = async(id)=>{
-        await axios.delete(`http://localhost:8080/fans/${id}`);
+        await axios.delete(serverLink + `/${id}`);
         loadFans();
     }
 

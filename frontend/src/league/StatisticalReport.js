@@ -6,6 +6,8 @@ export default function StatisticalReport() {
   
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
+    // const serverLink = 'http://localhost:8080/';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const[leagues, setLeagues] = useState([]);
 
@@ -14,7 +16,7 @@ export default function StatisticalReport() {
     }, []);
 
     const loadLeagues=async()=>{
-        const result = await axios.get("http://localhost:8080/leagues/number-of-nations-that-supports-league");
+        const result = await axios.get(serverLink + "/number-of-nations-that-supports-league");
         setLeagues(result.data);
     }
 

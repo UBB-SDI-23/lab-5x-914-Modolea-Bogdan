@@ -6,6 +6,8 @@ export default function AddFan() {
 
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
+    // const serverLink = 'http://localhost:8080/fans';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/fans';
 
     let navigate = useNavigate();
 
@@ -25,7 +27,7 @@ export default function AddFan() {
 
     const onSubmit=async(e)=>{
       e.preventDefault();
-      await axios.post("http://localhost:8080/fans", fan);
+      await axios.post(serverLink, fan);
       navigate("/" + toAddURL +  "fans");
     };
 

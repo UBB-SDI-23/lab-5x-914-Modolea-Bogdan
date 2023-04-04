@@ -21,6 +21,8 @@ import StatisticalReport from './league/StatisticalReport';
 function App() {
   const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
   // const toAddURL = '';
+  const serverLink = 'http://localhost:8080/';
+    // const serverLink = '';
   
   return (
     <div className="App">

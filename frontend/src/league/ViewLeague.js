@@ -8,6 +8,8 @@ var teams = [];
 export default function ViewTeam() {
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
+    // const serverLink = 'http://localhost:8080/';
+    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const [league, setLeague] = useState({
         abbreviation: '',
@@ -24,7 +26,7 @@ export default function ViewTeam() {
     }, []);
 
     const loadLeague = async()=>{
-        const result = await axios.get(`http://localhost:8080/leagues/${id}`);
+        const result = await axios.get(serverLink + `/${id}`);
         setLeague(result.data);
         teams = result.data.teams;
     }
