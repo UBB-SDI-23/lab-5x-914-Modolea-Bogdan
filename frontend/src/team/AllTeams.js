@@ -4,8 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 
 export default function AllTeams() {
   
-    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    // const toAddURL = '';
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
     // const serverLink = 'http://localhost:8080/';
     const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
     // const serverLink = '13.49.218.254';
@@ -21,7 +21,8 @@ export default function AllTeams() {
     const loadTeams=async()=>{
         console.log("loadTeams");
         console.log(serverLink);
-        const result = await axios.get("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams");
+        const result = await fetch("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams");
+        console.log(result);
         setTeams(result.data);
     }
   
