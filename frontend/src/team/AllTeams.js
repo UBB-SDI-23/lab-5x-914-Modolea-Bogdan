@@ -18,6 +18,7 @@ export default function AllTeams() {
     }, []);
 
     const loadTeams=async()=>{
+        console.log(serverLink);
         const result = await axios.get(serverLink + "/teams");
         setTeams(result.data);
     }
