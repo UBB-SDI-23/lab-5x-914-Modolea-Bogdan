@@ -7,8 +7,8 @@ export default function FilterFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/';
-    const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/fans';
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/fans';
 
     let navigate = useNavigate();
 

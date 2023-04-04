@@ -5,8 +5,8 @@ import { Link, useParams } from 'react-router-dom'
 export default function AllTeams() {
   
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/';
-    const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
+    const serverLink = 'http://localhost:8080';
+    // const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
     // const serverLink = '13.49.218.254';
 
     const[teams, setTeams] = useState([]);
@@ -17,14 +17,9 @@ export default function AllTeams() {
         loadTeams();
     }, []);
 
-    const apiUrl = "http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams";
-
     const loadTeams=async()=>{
-        console.log("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com");
-        // const result = await axios.get("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams");
-        
-        //console.log(result);
-        //setTeams(result.data);
+        const result = await axios.get(serverLink + "/teams");
+        setTeams(result.data);
     }
   
     const deleteTeam = async(id)=>{
