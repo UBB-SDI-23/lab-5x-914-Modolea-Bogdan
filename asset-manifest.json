@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/lab-5x-914-Modolea-Bogdan/static/css/main.756af292.css",
-    "main.js": "/lab-5x-914-Modolea-Bogdan/static/js/main.cce3332e.js",
+    "main.js": "/lab-5x-914-Modolea-Bogdan/static/js/main.944d2df4.js",
     "static/js/988.c52300f6.chunk.js": "/lab-5x-914-Modolea-Bogdan/static/js/988.c52300f6.chunk.js",
     "index.html": "/lab-5x-914-Modolea-Bogdan/index.html",
     "main.756af292.css.map": "/lab-5x-914-Modolea-Bogdan/static/css/main.756af292.css.map",
-    "main.cce3332e.js.map": "/lab-5x-914-Modolea-Bogdan/static/js/main.cce3332e.js.map",
+    "main.944d2df4.js.map": "/lab-5x-914-Modolea-Bogdan/static/js/main.944d2df4.js.map",
     "988.c52300f6.chunk.js.map": "/lab-5x-914-Modolea-Bogdan/static/js/988.c52300f6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.756af292.css",
-    "static/js/main.cce3332e.js"
+    "static/js/main.944d2df4.js"
   ]
 }
