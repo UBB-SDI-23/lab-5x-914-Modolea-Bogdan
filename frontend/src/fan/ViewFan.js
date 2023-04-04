@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 export default function ViewFan() {
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
 
     const [fan, setFans] = useState({
         name: '',

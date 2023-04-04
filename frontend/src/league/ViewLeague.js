@@ -6,8 +6,8 @@ import { Link, useParams } from 'react-router-dom'
 var teams = [];
 
 export default function ViewTeam() {
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
 
     const [league, setLeague] = useState({
         abbreviation: '',

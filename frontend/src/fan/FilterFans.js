@@ -5,8 +5,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 export default function FilterFans() {
   
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
+    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    // const toAddURL = '';
 
     let navigate = useNavigate();
 
