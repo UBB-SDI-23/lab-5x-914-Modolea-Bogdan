@@ -29,7 +29,9 @@ export default function AllTeams() {
     return (
     <div className='container'>
         <div className='py-4'>
-            <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addTeam"}>Add Team</Link>
+            <div className='mb-2'>
+                <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addTeam"}>Add Team</Link>
+            </div>
             <table className="table border shadow">
                 <thead>
                     <tr>

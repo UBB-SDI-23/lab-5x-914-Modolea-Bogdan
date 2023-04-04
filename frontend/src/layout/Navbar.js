@@ -16,7 +16,7 @@ export default function Navbar() {
 
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "teams"}>Teams</Link>
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "leagues"}>Leagues</Link>
-                <Link className='btn btn-outline-light'>Fans</Link>
+                <Link className='btn btn-outline-light' to={"/" + toAddURL + "fans"}>Fans</Link>
             </div>
         </nav>
     </div>

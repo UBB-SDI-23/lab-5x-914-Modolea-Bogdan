@@ -29,7 +29,10 @@ export default function AllLeagues() {
     return (
     <div className='container'>
         <div className='py-4'>
-            <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addLeague"}>Add League</Link>
+            <div className='mb-2'>
+                <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addLeague"}>Add League</Link>
+                <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "statisticalReport"}>Get Statistical Report</Link>
+            </div>
             <table className="table border shadow">
                 <thead>
                     <tr>

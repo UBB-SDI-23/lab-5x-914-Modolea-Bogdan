@@ -11,6 +11,12 @@ import AllLeagues from './league/AllLeagues';
 import AddLeague from './league/AddLeague';
 import ViewLeagut from './league/ViewLeague';
 import EditLeague from './league/EditLeague';
+import AllFans from './fan/AllFans';
+import AddFan from './fan/AddFan';
+import EditFan from './fan/EditFan';
+import ViewFan from './fan/ViewFan';
+import FilterFans from './fan/FilterFans';
+import StatisticalReport from './league/StatisticalReport';
 
 function App() {
   // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
@@ -31,8 +37,12 @@ function App() {
           <Route exact path="/addLeague" element={<AddLeague />}></Route>
           <Route exact path={"/" + toAddURL + "updateLeague/:id"} element={<EditLeague />}></Route>
           <Route exact path={"/" + toAddURL + "viewLeague/:id"} element={<ViewLeagut />}></Route>
-          {/* <Route exact path="/fans" element={<AllFans />}></Route> */}
-          {/* <Route exact path="/addFan" element={<AddFan />}></Route> */}
+          <Route exact path={"/" + toAddURL + "statisticalReport"} element={<StatisticalReport />}></Route>
+          <Route exact path="/fans" element={<AllFans />}></Route>
+          <Route exact path="/addFan" element={<AddFan />}></Route>
+          <Route exact path={"/" + toAddURL + "updateFan/:id"} element={<EditFan />}></Route>
+          <Route exact path={"/" + toAddURL + "viewFan/:id"} element={<ViewFan />}></Route>
+          <Route exact path={"/" + toAddURL + "filterFans/:age"} element={<FilterFans />}></Route>
         </Routes>
       </Router>
     </div>
