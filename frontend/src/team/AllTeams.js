@@ -7,8 +7,8 @@ export default function AllTeams() {
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
     // const serverLink = 'http://localhost:8080/';
-    // const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
-    const serverLink = '13.49.218.254';
+    const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
+    // const serverLink = '13.49.218.254';
 
     const[teams, setTeams] = useState([]);
 
@@ -20,7 +20,8 @@ export default function AllTeams() {
 
     const loadTeams=async()=>{
         console.log("loadTeams");
-        const result = await axios.get("http://13.49.218.254/teams");
+        console.log(serverLink);
+        const result = await axios.get("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams");
         setTeams(result.data);
     }
   
