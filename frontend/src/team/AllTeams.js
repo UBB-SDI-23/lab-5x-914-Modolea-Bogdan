@@ -19,9 +19,8 @@ export default function AllTeams() {
     }, []);
 
     const loadTeams=async()=>{
-        console.log("loadTeams");
-        console.log(serverLink);
-        const result = await fetch("http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com/teams");
+        console.log("http://13.51.127.211/teams");
+        const result = await fetch("http://13.51.127.211/teams");
         console.log(result);
         setTeams(result.data);
     }
