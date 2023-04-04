@@ -7,8 +7,8 @@ import { useNavigate, Link } from 'react-router-dom';
 
 export default function AddTeam() {
 
-    const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    // const toAddURL = '';
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
     // const serverLink = 'http://localhost:8080/';
     const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/';
 
