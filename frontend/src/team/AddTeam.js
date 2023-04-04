@@ -10,7 +10,7 @@ export default function AddTeam() {
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
     // const serverLink = 'http://localhost:8080/';
-    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/';
+    const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/';
 
     let navigate = useNavigate();
     

@@ -8,7 +8,7 @@ export default function AddTeam() {
     // const toAddURL = '';
 
     // const serverLink = 'http://localhost:8080/leagues';
-    const serverLink = 'https://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
+    const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     let navigate = useNavigate();
 
