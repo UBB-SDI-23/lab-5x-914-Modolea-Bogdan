@@ -20,7 +20,7 @@ export default function AllTeams() {
 
     const loadTeams=async()=>{
         console.log(serverLink);
-        const result = await axios.get("13.49.218.254/teams");
+        const result = await axios.get("http://13.49.218.254/teams");
         setTeams(result.data);
     }
   
