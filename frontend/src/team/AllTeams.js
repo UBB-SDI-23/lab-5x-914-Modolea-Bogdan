@@ -7,7 +7,8 @@ export default function AllTeams() {
     const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     // const toAddURL = '';
     // const serverLink = 'http://localhost:8080/';
-    const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
+    // const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
+    const serverLink = '13.49.218.254';
 
     const[teams, setTeams] = useState([]);
 
