@@ -43,9 +43,9 @@ public class FanService {
     }
 
     public FanByID getFanById(int id) throws EntityNotFoundException {
-        Fan fan = fanRepository.findById(id).orElse(null);
-        if (fan == null)
-            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
+        Fan fan = fanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("No fan found with id %d", id)));
+//        if (fan == null)
+//            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
 
         return new FanByID(
                 fan.getFid(),

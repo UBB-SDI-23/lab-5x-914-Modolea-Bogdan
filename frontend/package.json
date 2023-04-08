@@ -1,8 +1,10 @@
 {
+  "homepage": "http://ubb-sdi-23.github.io/lab-5x-914-Modolea-Bogdan",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mui/material": "^5.11.16",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

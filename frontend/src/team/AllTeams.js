@@ -5,16 +5,22 @@ import { Link, useParams } from 'react-router-dom'
 export default function AllTeams() {
   
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080';
-    // const serverLink = 'http://myleaguemanagerlab05-env.eba-m6hmvmjt.eu-north-1.elasticbeanstalk.com';
+    // const serverLink = 'http://localhost:8080';
+    const serverLink = 'http://leaguemanagersdi-env.eba-pnmmng2r.eu-north-1.elasticbeanstalk.com/teams';
     // const serverLink = '13.49.218.254';
-
+    
     const[teams, setTeams] = useState([]);
 
     const {id} = useParams();
 
     useEffect(() => {
-        loadTeams();
+        fetch(`../teams`)
+        .then(res => res.json())
+        .then(data => {
+            setTeams(data);
+        });
+        
+        //loadTeam();
     }, []);
 
     const loadTeams=async()=>{

@@ -5,8 +5,10 @@ import { Link, useParams } from 'react-router-dom'
 export default function ViewTeam() {
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080/teams';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/teams';
+    // const serverLink = 'http://localhost:8080/teams';
+    const serverLink = 'https://leaguemanagersdi-env.eba-pnmmng2r.eu-north-1.elasticbeanstalk.com/teams';
+
+    const[loading, setLoading] = useState(false);
 
     const [team, setTeam] = useState({
         name: '',
@@ -21,7 +23,15 @@ export default function ViewTeam() {
     const {id} = useParams();
 
     useEffect(() => {
-        loadTeam();
+        setLoading(true);
+        fetch(serverLink)
+        .then(res => res.json())
+        .then(data => {
+            setTeam(data);
+            setLoading(false);
+        });
+        
+        //loadTeam();
     }, []);
 
     const loadTeam = async()=>{

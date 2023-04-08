@@ -24,7 +24,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/fans")
 public class FanController {
     @Autowired
-    private FanService service;
+    private /*final*/ FanService service;
+
+//    @Autowired
+//    public FanController(FanService fanService){
+//        service = fanService;
+//    }
 
     @PostMapping
     public ResponseEntity<Fan> addFan(@RequestBody @Valid FanRequest fanRequest){
