@@ -7,7 +7,7 @@ function LeagueShowAll() {
 
 
     useEffect(() => {
-        fetch("http://ec2-16-16-4-156.eu-north-1.compute.amazonaws.com:8080/leagues")
+        fetch("https://sdidemo.chickenkiller.com/leagues")
             .then(response => response.json())
             .then(data => setLeagues(data));
     }, []);
