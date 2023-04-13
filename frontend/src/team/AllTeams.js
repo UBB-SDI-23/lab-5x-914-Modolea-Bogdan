@@ -6,7 +6,7 @@ export default function AllTeams() {
   
     const toAddURL = '';
     // const serverLink = 'http://localhost:8080';
-    const serverLink = 'http://leaguemanagersdi-env.eba-pnmmng2r.eu-north-1.elasticbeanstalk.com/teams';
+    const serverLink = 'http://ec2-16-16-4-156.eu-north-1.compute.amazonaws.com:8080';
     // const serverLink = '13.49.218.254';
     
     const[teams, setTeams] = useState([]);
@@ -14,17 +14,12 @@ export default function AllTeams() {
     const {id} = useParams();
 
     useEffect(() => {
-        fetch(`../teams`)
-        .then(res => res.json())
-        .then(data => {
-            setTeams(data);
-        });
-        
-        //loadTeam();
+        loadTeams();
     }, []);
 
     const loadTeams=async()=>{
-        const result = await axios.get(serverLink + "/teams");
+        console.log(serverLink);
+        const result = await axios.get(`${serverLink} + /teams`);
         setTeams(result.data);
     }
   

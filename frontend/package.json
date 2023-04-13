@@ -1,5 +1,4 @@
 {
-  "homepage": "https://ubb-sdi-23.github.io/lab-5x-914-Modolea-Bogdan/",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -26,19 +25,17 @@
     "react-bootstrap-dropdown": "^0.3.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^2.1.3",
     "request": "^2.88.2",
-    "require": "^2.4.20",
+    "require": "^0.4.4",
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "url": "^0.11.0",
-    "web-vitals": "^2.1.4",
-    "webpack": "^5.77.0"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
