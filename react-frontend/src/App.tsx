@@ -1,31 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import LeagueShowAll from './components/league/LeagueShowAll'
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import AppMenu from './components/AppMenu'
+import AppHome from './components/AppHome'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <React.Fragment>
-      <LeagueShowAll/>
+      <Router>
+        <AppMenu />
 
-      <div className="App">
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </div>
+        <Routes>
+          <Route path="/" element={<AppHome />} />
+          <Route path="/leagues" element={<LeagueShowAll />} />
+        </Routes>
+
+      </Router>
     </React.Fragment>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { League } from "../../models/League";
+import { BACKEND_API_URL } from "../../constants";
 
 
 function LeagueShowAll() {
@@ -7,7 +8,7 @@ function LeagueShowAll() {
 
 
     useEffect(() => {
-        fetch("https://sdidemo.chickenkiller.com/leagues")
+        fetch(`${BACKEND_API_URL}leagues`)
             .then(response => response.json())
             .then(data => setLeagues(data));
     }, []);
