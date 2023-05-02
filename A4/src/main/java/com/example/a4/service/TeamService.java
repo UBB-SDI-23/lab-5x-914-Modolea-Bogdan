@@ -6,13 +6,13 @@ import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
 import com.example.a4.exception.EntityNotFoundException;
-import com.example.a4.repository.FanOfTeamRepository;
-import com.example.a4.repository.FanRepository;
-import com.example.a4.repository.LeagueRepository;
-import com.example.a4.repository.TeamRepository;
+import com.example.a4.repository.*;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -50,6 +50,36 @@ public class TeamService {
 
     public List<TeamGetAll> getTeams() throws EntityNotFoundException {
         List<Team> teams = teamRepository.findAll();
+        if (teams.isEmpty())
+            throw new EntityNotFoundException("No teams found!");
+
+        List<TeamGetAll> teamGetAlls = new ArrayList<>();
+        for (Team team : teams) {
+            if (team.getLeague() != null) {
+                TeamGetAll teamGetAll = new TeamGetAll(
+                        team.getTid(),
+                        team.getName(),
+                        team.getTop(),
+                        team.getJungle(),
+                        team.getMid(),
+                        team.getBot(),
+                        team.getSupport(),
+                        team.getLeague().getLid()
+                );
+                teamGetAlls.add(teamGetAll);
+            }
+        }
+
+        return teamGetAlls;
+    }
+
+    public Page<Team> findTeamsWithPagination(int offset, int pageSize) throws EntityNotFoundException {
+        Page<Team> teams = teamRepository.findAll(PageRequest.of(offset, pageSize));
+        return teams;
+    }
+
+    public List<TeamGetAll> findTeamsWithSorting(String field) throws EntityNotFoundException {
+        List<Team> teams = teamRepository.findAll(Sort.by(field));
         if (teams.isEmpty())
             throw new EntityNotFoundException("No teams found!");
 

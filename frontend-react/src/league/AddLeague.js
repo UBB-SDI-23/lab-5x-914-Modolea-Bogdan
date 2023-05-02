@@ -17,10 +17,11 @@ export default function AddTeam() {
         region: '',
         year: 0,
         bestPlayer: '',
-        audience: 0
+        audience: 0,
+        description: ''
     })
 
-    const{abbreviation, region, year, bestPlayer, audience} = league;
+    const{abbreviation, region, year, bestPlayer, audience, description} = league;
 
     const onInputChange=(e)=>{
         setLeague({...league, [e.target.name]: e.target.value});
@@ -58,6 +59,10 @@ export default function AddTeam() {
                     <div className='mb-3'>
                         <label htmlFor='audience' className='form-label'>Audience Number</label>
                         <input type={'number'} className='form-control' name='audience' placeholder='Enter Audience Number' value={audience} onChange={(e)=>onInputChange(e)}/>
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='description' className='form-label'>Description</label>
+                        <input type={'text'} className='form-control' name='description' placeholder='Enter Description' value={description} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Add League</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "leagues"}>Cancel</Link>

@@ -16,4 +16,5 @@ public class LeagueGetAll {
     private int year;
     private String bestPlayer;
     private int audience;
+    private String description;
 }

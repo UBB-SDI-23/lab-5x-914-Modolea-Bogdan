@@ -15,6 +15,8 @@ import com.example.a4.repository.LeagueRepository;
 import com.example.a4.repository.TeamRepository;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -42,6 +44,11 @@ public class LeagueService {
             throw new EntityNotFoundException("No league found!");
 
         return ObjectMapper.mapAll(leagues, LeagueGetAll.class);
+    }
+
+    public Page<League> findLeaguesWithPagination(int offset, int pageSize) throws EntityNotFoundException {
+        Page<League> leagues = leagueRepository.findAll(PageRequest.of(offset, pageSize));
+        return leagues;
     }
 
     public League getLeagueById(int id) throws EntityNotFoundException{

@@ -1,3 +1,4 @@
+import { wait } from '@testing-library/user-event/dist/utils';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -5,11 +6,18 @@ import { Link, useParams } from 'react-router-dom'
 export default function AllTeams() {
   
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080';
-    const serverLink = 'https://sdidemo.chickenkiller.com';
-    // const serverLink = '13.49.218.254';
+    const serverLink = 'http://localhost:8080';
+    // const serverLink = 'https://sdidemo.chickenkiller.com';
     
     const[teams, setTeams] = useState([]);
+
+    const[currentPage, setCurrentPage] = useState(1);
+    const[npage, setNPages] = useState(0);
+    const recordsPerPage = 100;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+    // const records = teams.slice(firstIndex, lastIndex);
+    const numbers = [...Array(npage + 1).keys()].slice(1);
 
     const {id} = useParams();
 
@@ -17,16 +25,25 @@ export default function AllTeams() {
         loadTeams();
     }, []);
 
+    
+    const loadTeamsWithPage=async(page)=>{
+        const result = await axios.get(`${serverLink}/teams/pagination/${page - 1}/${recordsPerPage}`);
+        setTeams(result.data.content);
+    }
+
     const loadTeams=async()=>{
         console.log(serverLink);
-        const result = await axios.get(`${serverLink}/teams`);
-        setTeams(result.data);
+        const result = await axios.get(`${serverLink}/teams/pagination/${currentPage - 1}/${recordsPerPage}`);
+        setNPages(result.data.totalPages);
+        setTeams(result.data.content);
     }
   
     const deleteTeam = async(id)=>{
         await axios.delete(serverLink + `/teams/${id}`);
         loadTeams();
     }
+
+
 
 
     return (
@@ -61,18 +78,65 @@ export default function AllTeams() {
                                 <td>{team.bot}</td>
                                 <td>{team.support}</td>
                                 <td>
-                                    <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.id}`}>View</Link>
-                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.id}`} >Edit</Link>
-                                    <button className='btn btn-danger mx-1' onClick={()=>deleteTeam(team.id)}>Delete</button>
+                                    <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.tid}`}>View</Link>
+                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.tid}`} >Edit</Link>
+                                    <button className='btn btn-danger mx-1' onClick={()=>deleteTeam(team.tid)}>Delete</button>
                                 </td>
                             </tr>
                         ))
                     }
-
-                    
                 </tbody>
             </table>
+            <nav>
+                <ul className='pagination'>
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={prePage}
+                        >Prev
+                        </a>
+                    </li>
+                    {/* {
+                        numbers.map((n, i) => (
+                            <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                <a href='#' className='page-link'
+                                onClick={() => changeCPage(n)}>{n}</a>
+                            </li>
+                        ))
+                    } */}
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={nextPage}
+                        >Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
   )
+
+  function sleep(ms) { 
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function prePage(){
+    console.log(currentPage);
+    if(currentPage > 1){
+        setCurrentPage(currentPage - 1);
+        loadTeamsWithPage(currentPage - 1);
+    }
+  }
+
+  function changeCPage(id) { 
+    setCurrentPage(id);
+    loadTeamsWithPage(id);
+  }
+
+  function nextPage() { 
+    console.log(currentPage);
+    if(currentPage < npage) {
+        setCurrentPage(currentPage + 1);
+        loadTeamsWithPage(currentPage + 1);
+    }
+  }
 }

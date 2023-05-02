@@ -11,6 +11,7 @@ import com.example.a4.service.LeagueService;
 import com.example.a4.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,18 @@ public class TeamController {
     @GetMapping
     public ResponseEntity<List<TeamGetAll>> findAllTeams() throws EntityNotFoundException {
         return ResponseEntity.ok(service.getTeams());
+    }
+
+    @GetMapping("/page/{field}")
+    public ResponseEntity<List<TeamGetAll>> findAllTeamsWithSort(@PathVariable String field) throws EntityNotFoundException {
+        List<TeamGetAll> allTeams = service.findTeamsWithSorting(field);
+        return ResponseEntity.ok(allTeams);
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<Team>> findAllTeamsWithSort(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+        Page<Team> allTeams = service.findTeamsWithPagination(offset, pageSize);
+        return ResponseEntity.ok(allTeams);
     }
 
     @GetMapping("/{teamID}")

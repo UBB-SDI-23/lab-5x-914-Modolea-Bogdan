@@ -28,6 +28,7 @@ public class League {
     private int year;
     private String bestPlayer;
     private int audience;
+    private String description;
 
     @OneToMany(mappedBy="league", fetch = FetchType.EAGER)
     private List<Team> teams;

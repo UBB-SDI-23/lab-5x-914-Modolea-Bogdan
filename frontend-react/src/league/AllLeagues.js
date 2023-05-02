@@ -11,15 +11,27 @@ export default function AllLeagues() {
 
     const[leagues, setLeagues] = useState([]);
 
+    const[currentPage, setCurrentPage] = useState(1);
+    const[npage, setNPages] = useState(0);
+    const recordsPerPage = 100;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+
     const {id} = useParams();
 
     useEffect(() => {
         loadLeagues();
     }, []);
 
+    const loadLeaguesWithPage=async(page)=>{
+        const result = await axios.get(`${serverLink}/pagination/${page - 1}/${recordsPerPage}`);
+        setLeagues(result.data.content);
+    }
+
     const loadLeagues=async()=>{
-        const result = await axios.get(serverLink);
-        setLeagues(result.data);
+        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
+        setNPages(result.data.totalPages);
+        setLeagues(result.data.content);
     }
   
     const deleteLeague = async(id)=>{
@@ -44,6 +56,7 @@ export default function AllLeagues() {
                         <th scope="col">Active since</th>
                         <th scope="col">Best Player</th>
                         <th scope="col">Audience</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -58,6 +71,7 @@ export default function AllLeagues() {
                                 <td>{league.year}</td>
                                 <td>{league.bestPlayer}</td>
                                 <td>{league.audience}</td>
+                                <td>{league.description}</td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewLeague/${league.lid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateLeague/${league.lid}`} >Edit</Link>
@@ -65,12 +79,54 @@ export default function AllLeagues() {
                                 </td>
                             </tr>
                         ))
-                    }
-
-                    
+                    }  
                 </tbody>
             </table>
+            <nav>
+                <ul className='pagination'>
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={prePage}
+                        >Prev
+                        </a>
+                    </li>
+                    {/* {
+                        numbers.map((n, i) => (
+                            <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                <a href='#' className='page-link'
+                                onClick={() => changeCPage(n)}>{n}</a>
+                            </li>
+                        ))
+                    } */}
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={nextPage}
+                        >Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
   )
+  function prePage(){
+    console.log(currentPage);
+    if(currentPage > 1){
+        setCurrentPage(currentPage - 1);
+        loadLeaguesWithPage(currentPage - 1);
+    }
+  }
+
+  function changeCPage(id) { 
+    setCurrentPage(id);
+    loadLeaguesWithPage(id);
+  }
+
+  function nextPage() { 
+    console.log(currentPage);
+    if(currentPage < npage) {
+        setCurrentPage(currentPage + 1);
+        loadLeaguesWithPage(currentPage + 1);
+    }
+  }   
 }

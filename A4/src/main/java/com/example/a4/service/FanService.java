@@ -3,6 +3,7 @@ package com.example.a4.service;
 import com.example.a4.dto.*;
 import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
+import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
 import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.FanOfTeamRepository;
@@ -10,6 +11,8 @@ import com.example.a4.repository.FanRepository;
 import com.example.a4.repository.TeamRepository;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,6 +43,11 @@ public class FanService {
             throw new EntityNotFoundException("No fans found!");
 
         return ObjectMapper.mapAll(fans, FanGetAll.class);
+    }
+
+    public Page<Fan> findFansWithPagination(int offset, int pageSize) throws EntityNotFoundException {
+        Page<Fan> fans = fanRepository.findAll(PageRequest.of(offset, pageSize));
+        return fans;
     }
 
     public FanByID getFanById(int id) throws EntityNotFoundException {

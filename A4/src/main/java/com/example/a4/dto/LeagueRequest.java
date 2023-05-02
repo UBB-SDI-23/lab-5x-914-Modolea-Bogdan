@@ -18,4 +18,5 @@ public class LeagueRequest {
     private int year;
     private String bestPlayer;
     private int audience;
+    private String description;
 }

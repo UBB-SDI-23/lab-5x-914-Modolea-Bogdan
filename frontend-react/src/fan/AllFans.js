@@ -7,20 +7,33 @@ export default function AllFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    const serverLink = 'https://sdidemo.chickenkiller.com/fans';
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     let navigate = useNavigate();
 
     const[fans, setFans] = useState([]);
     const {id} = useParams();
 
+    const[currentPage, setCurrentPage] = useState(1);
+    const[npage, setNPages] = useState(0);
+    const recordsPerPage = 100;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
+
     useEffect(() => {
         loadFans();
     }, []);
 
+    const loadFansWithPage=async(page)=>{
+        const result = await axios.get(`${serverLink}/pagination/${page - 1}/${recordsPerPage}`);
+        setFans(result.data.content);
+    }
+
     const loadFans=async()=>{
-        const result = await axios.get(serverLink);
-        setFans(result.data);
+        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
+        setNPages(result.data.totalPages);
+        setFans(result.data.content);
     }
   
     const deleteFan = async(id)=>{
@@ -90,10 +103,53 @@ export default function AllFans() {
                             </tr>
                         ))
                     }
-
                 </tbody>
             </table>
+            <nav>
+                <ul className='pagination'>
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={prePage}
+                        >Prev
+                        </a>
+                    </li>
+                    {/* {
+                        numbers.map((n, i) => (
+                            <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                                <a href='#' className='page-link'
+                                onClick={() => changeCPage(n)}>{n}</a>
+                            </li>
+                        ))
+                    } */}
+                    <li className='page-item'>
+                        <a href='#' className='page-link'
+                        onClick={nextPage}
+                        >Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
   )
+  function prePage(){
+    console.log(currentPage);
+    if(currentPage > 1){
+        setCurrentPage(currentPage - 1);
+        loadFansWithPage(currentPage - 1);
+    }
+  }
+
+  function changeCPage(id) { 
+    setCurrentPage(id);
+    loadFansWithPage(id);
+  }
+
+  function nextPage() { 
+    console.log(currentPage);
+    if(currentPage < npage) {
+        setCurrentPage(currentPage + 1);
+        loadFansWithPage(currentPage + 1);
+    }
+  }   
 }
