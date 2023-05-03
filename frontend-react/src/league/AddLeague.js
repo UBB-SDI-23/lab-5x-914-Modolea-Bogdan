@@ -29,8 +29,14 @@ export default function AddTeam() {
 
     const onSubmit=async(e)=>{
       e.preventDefault();
-      await axios.post(serverLink, league);
-      navigate("/" + toAddURL +  "leagues");
+      try{
+        await axios.post(serverLink, league);
+        navigate("/" + toAddURL +  "leagues");
+      }
+      catch(err){
+        alert("Sorry, but the year is invalid!");
+        console.log(err.request);
+      }
     };
 
   return (

@@ -21,8 +21,13 @@ export default function FilterFans() {
     }, []);
 
     const loadFans=async()=>{
-        const result = await axios.get(serverLink + `/filter/${age}`);
-        setFans(result.data);
+        try{
+            const result = await axios.get(serverLink + `/filter/${age}`);
+            setFans(result.data);
+        }
+        catch(err){
+            console.log(err);
+        }
     }
 
     return (

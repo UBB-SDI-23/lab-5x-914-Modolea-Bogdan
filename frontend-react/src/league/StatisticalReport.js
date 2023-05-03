@@ -20,10 +20,19 @@ export default function StatisticalReport() {
         setLeagues(result.data);
     }
 
+    function sortNationalities() { 
+        const sortedData = [...leagues].sort((a,b) =>{
+            return a.counter - b.counter;
+        });
+        setLeagues(sortedData);
+        console.log("sorted");
+    }
+
     return (
     <div className='container'>
         <div className='py-4'>
             <div className='mb-2'>
+            <button className='btn btn-outline-primary mx-1' onClick={sortNationalities}>Sort</button>
             <Link className='btn btn-outline-danger mx-1' to={"/" + toAddURL + "leagues"}>Back</Link>
             </div>
             <table className="table border shadow">
