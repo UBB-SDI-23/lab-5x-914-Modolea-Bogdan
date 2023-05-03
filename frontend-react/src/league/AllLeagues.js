@@ -6,7 +6,8 @@ export default function AllLeagues() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080/leagues';
+    // const serverLink = 'http://localhost:8080/leagues';
+    const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const[leagues, setLeagues] = useState([]);

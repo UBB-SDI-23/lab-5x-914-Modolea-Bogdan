@@ -6,8 +6,8 @@ import { Link, useParams } from 'react-router-dom'
 export default function AllTeams() {
   
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080';
-    // const serverLink = 'https://sdidemo.chickenkiller.com';
+    // const serverLink = 'http://localhost:8080';
+    const serverLink = 'https://sdidemo.chickenkiller.com';
     
     const[teams, setTeams] = useState([]);
 

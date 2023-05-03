@@ -7,8 +7,8 @@ import { useNavigate, Link } from 'react-router-dom';
 export default function AddTeam() {
 
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080/';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/';
+    // const serverLink = 'http://localhost:8080/';
+    const serverLink = 'https://sdidemo.chickenkiller.com/';
 
     let navigate = useNavigate();
     
