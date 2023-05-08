@@ -1,12 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddFan() {
 
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    const serverLink = 'https://sdidemo.chickenkiller.com/fans';
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     let navigate = useNavigate();
 
@@ -25,9 +28,51 @@ export default function AddFan() {
     }
 
     const onSubmit=async(e)=>{
-      e.preventDefault();
-      await axios.post(serverLink, fan);
-      navigate("/" + toAddURL +  "fans");
+        e.preventDefault();
+
+        if(fan.name === '') { 
+            toast.warn('Name cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.age === 0) {
+            toast.warn('Age cannot be 0!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.placeOfBirth === '') {
+            toast.warn('The fan has to be born somewhere!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+
+
+        await axios.post(serverLink, fan);
+        navigate("/" + toAddURL +  "fans");
     };
 
   return (
@@ -59,6 +104,7 @@ export default function AddFan() {
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Add Fan</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "fans"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>

@@ -3,19 +3,18 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddTeam() {
 
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/';
-    const serverLink = 'https://sdidemo.chickenkiller.com/';
+    const serverLink = 'http://localhost:8080/';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/';
 
     let navigate = useNavigate();
     
-    const[myLeagues, setLeagues] = useState({});
-    const[mapLeagues, setNewLeagues] = useState({});
-
-    const [selectedItem, setSelectedItem] = useState(null);
+    const[league, setLeague] = useState('');
 
     const [team, setTeam] = useState({
         name: '',
@@ -27,42 +26,40 @@ export default function AddTeam() {
         leagueID: 0
     })
 
-    const{name, top, jungle, mid, bot, support, leagueID} = team;
+    const{name, top, jungle, mid, bot, support} = team;
 
     const onInputChange=(e)=>{
         setTeam({...team, [e.target.name]: e.target.value});
     }
 
-    useEffect(() => {
-        axios.get(serverLink + `leagues`)
-        .then(res => {
-            const newDict = {};
-            const newDict2= {};
-            res.data.forEach(item => {
-                newDict[item.abbreviation] = item.abbreviation;
-                newDict2[item.abbreviation] = item;
-            });
-            setLeagues(newDict);
-            setNewLeagues(newDict2);
-    })
-        .catch(err => console.log(err));
-    }, []);
-
+    const onInputChange2=(e)=>{
+        setLeague(e.target.value);
+    }
+        
     const onSubmit=async(e)=>{
-      e.preventDefault();
-      team.leagueID = mapLeagues[selectedItem].lid;
-      console.log(team);
-      await axios.post(serverLink + "teams", team);
-      navigate("/" + toAddURL +  "teams");
-    };
+        e.preventDefault();
+      
+        const result = await axios.get(`${serverLink}leagues/get-league-by-name/${league}`);
+        team.leagueID = result.data.lid;
+        console.log(team);
 
-    function renderDropdownItems(dict) {
-        return Object.entries(dict).map(([key, value]) => (
-          <Dropdown.Item key={key} eventKey={key}>
-            {value}
-          </Dropdown.Item>
-        ));
-      }
+        if(team.name === '') { 
+            toast.warn('Name cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+
+        await axios.post(serverLink + "teams", team);
+        navigate("/" + toAddURL +  "teams");
+    };
 
   return (
     <div className='container'>
@@ -96,16 +93,13 @@ export default function AddTeam() {
                         <input type={'text'} className='form-control' name='support' placeholder='Enter Support Name' value={support} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <div className='mb-3'>
-                        <DropdownButton
-                            title={selectedItem || 'League Name'}
-                            onSelect={key => setSelectedItem(key)}
-                            value={leagueID}
-                        >
-                            {renderDropdownItems(myLeagues)}
-                        </DropdownButton>
+                        <label htmlFor='league' className='form-label'>League Name</label>
+                        <input type={'text'} className='form-control' name='league' placeholder='Enter League Name' value={league} onChange={(e)=>onInputChange2(e)}/>
                     </div>
+
                     <button type='submit' className='btn btn-outline-primary'>Add Team</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "teams"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>

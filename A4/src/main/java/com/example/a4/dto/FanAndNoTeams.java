@@ -9,14 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-// to avoid Content-Type 'application/json;charset=UTF-8' is not supported
-public class ReadHelper {
-    private int fanSince;
-    private String opinion;
-
+public class FanAndNoTeams {
+    private int fid;
     private String name;
     private int age;
     private String nationality;
     private String occupation;
     private String placeOfBirth;
+    private long counter;
 }

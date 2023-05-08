@@ -26,8 +26,13 @@ public class FanService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public Fan saveFan(FanRequest fanRequest) {
+    public Fan saveFan(FanRequest fanRequest) throws EntityNotFoundException {
+        Page<Fan> data = findFansWithPagination(0, 1);
+        int totalElems = (int) data.getTotalElements();
+        Fan lastFan = findFansWithPagination((totalElems - 1), 1).getContent().get(0);
+
         Fan newFan = new Fan();
+        newFan.setFid(lastFan.getFid() + 1);
         newFan.setName(fanRequest.getName());
         newFan.setNationality(fanRequest.getNationality());
         newFan.setOccupation(fanRequest.getOccupation());
@@ -48,6 +53,16 @@ public class FanService {
     public Page<Fan> findFansWithPagination(int offset, int pageSize) throws EntityNotFoundException {
         Page<Fan> fans = fanRepository.findAll(PageRequest.of(offset, pageSize));
         return fans;
+    }
+
+    public Page<FanAndNoTeams> findFanAndNoTeams(int offset, int pageSize) {
+        Page<FanAndNoTeams> fanAndNoTeams = fanRepository.findFanAndNoTeams(PageRequest.of(offset, pageSize));
+        return fanAndNoTeams;
+    }
+
+    public Page<NumberNationalities> findNumberNationalities(int offset, int pageSize) {
+        Page<NumberNationalities> numberNationalities = fanRepository.findNumberNationalities(PageRequest.of(offset, pageSize));
+        return numberNationalities;
     }
 
     public FanByID getFanById(int id) throws EntityNotFoundException {
@@ -110,12 +125,13 @@ public class FanService {
         fanRepository.save(existingFan);
     }
 
-    public List<FanGetAll> filterFansByAge(int age) throws EntityNotFoundException {
-        List<FanGetAll> fans = fanRepository.filterFansByAge(age);
+    public Page<FanGetAll> filterFansByAge(int age, int offset, int pageSize) throws EntityNotFoundException {
+        Page<FanGetAll> fans = fanRepository.filterFansByAge(age, PageRequest.of(offset, pageSize));
         if (fans.isEmpty())
             throw new EntityNotFoundException(String.format("No fan with age greater than %d was found!", age));
 
-        return ObjectMapper.mapAll(fans, FanGetAll.class);
+        return fans;
+//        return ObjectMapper.mapAll(fans, FanGetAll.class);
     }
 
     public Fan addFanToTeam(int id, FanOfTeam fan) throws EntityNotFoundException {

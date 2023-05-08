@@ -1,14 +1,16 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddTeam() {
 
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
 
-    // const serverLink = 'http://localhost:8080/leagues';
-    const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
+    const serverLink = 'http://localhost:8080/leagues';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     let navigate = useNavigate();
@@ -29,15 +31,24 @@ export default function AddTeam() {
     }
 
     const onSubmit=async(e)=>{
-      e.preventDefault();
-      try{
+        e.preventDefault();
+        
+        if(league.year < 2010 || league.year > 2023){
+            toast.warn('Year range is wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+        }
+
         await axios.post(serverLink, league);
         navigate("/" + toAddURL +  "leagues");
-      }
-      catch(err){
-        alert("Sorry, but the year is invalid!");
-        console.log(err.request);
-      }
+
     };
 
   return (
@@ -73,6 +84,7 @@ export default function AddTeam() {
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Add League</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "leagues"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>

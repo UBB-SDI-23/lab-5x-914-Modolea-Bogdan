@@ -6,14 +6,16 @@ export default function AllLeagues() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/leagues';
-    const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
+    const serverLink = 'http://localhost:8080/leagues';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const[leagues, setLeagues] = useState([]);
 
     const[currentPage, setCurrentPage] = useState(1);
     const[npage, setNPages] = useState(0);
+    const[numbers1, setNumbers1] = useState([0, 1, 2, 3].slice(1));
+    const[numbers2, setNumbers2] = useState([]);
     const recordsPerPage = 100;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
@@ -25,14 +27,49 @@ export default function AllLeagues() {
     }, []);
 
     const loadLeaguesWithPage=async(page)=>{
-        const result = await axios.get(`${serverLink}/pagination/${page - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
         setLeagues(result.data.content);
+
+        if(page === 1){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 2){
+            setNumbers1([0, 1, 2, 3, 4].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 3){
+            setNumbers1([0, 1, 2, 3, 4, 5].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 4){
+            setNumbers1([0, 1, 2, 3, 4, 5, 6].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === npage){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([npage - 2, npage - 1, npage].slice(1));
+        }else if(page === npage - 1){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1].slice(1));
+        }else if(page === npage - 2){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+        }else if(page === npage - 3){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+        }else if(page == npage - 4){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4].slice(1));
+        }
+        else{
+            setNumbers1([0, 1, 2, 3, '...', page - 2, page - 1, page, page + 1, page + 2].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }
     }
 
     const loadLeagues=async()=>{
-        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setLeagues(result.data.content);
+        const lastpage = result.data.totalPages;
+        setNumbers2([lastpage - 3, lastpage - 2, lastpage - 1, lastpage].slice(1));
     }
   
     const deleteLeague = async(id)=>{
@@ -58,6 +95,7 @@ export default function AllLeagues() {
                         <th scope="col">Best Player</th>
                         <th scope="col">Audience</th>
                         <th scope="col">Description</th>
+                        <th scope="col">Number of Teams</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -73,6 +111,7 @@ export default function AllLeagues() {
                                 <td>{league.bestPlayer}</td>
                                 <td>{league.audience}</td>
                                 <td>{league.description}</td>
+                                <td>{league.counter}</td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewLeague/${league.lid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateLeague/${league.lid}`} >Edit</Link>
@@ -91,14 +130,27 @@ export default function AllLeagues() {
                         >Prev
                         </a>
                     </li>
-                    {/* {
-                        numbers.map((n, i) => (
+                    {
+                        numbers1.map((n, i) => (
+                            <li className={`page-item ${currentPage === n && n != '...' ? 'active' : ''}`} key={i}>
+                                <a href='#' className='page-link'
+                                onClick={() => changeCPage(n)}>{n}</a>
+                            </li>
+                        ))
+                    }
+
+                    <li className='page-item'>
+                        <a href='#' className='page-link'>...</a>
+                    </li>
+                    
+                    {   
+                        numbers2.map((n, i) => (
                             <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
                                 <a href='#' className='page-link'
                                 onClick={() => changeCPage(n)}>{n}</a>
                             </li>
                         ))
-                    } */}
+                    }
                     <li className='page-item'>
                         <a href='#' className='page-link'
                         onClick={nextPage}
@@ -119,8 +171,10 @@ export default function AllLeagues() {
   }
 
   function changeCPage(id) { 
-    setCurrentPage(id);
-    loadLeaguesWithPage(id);
+    if(id !== '...'){
+        setCurrentPage(id);
+        loadLeaguesWithPage(id);
+    }
   }
 
   function nextPage() { 

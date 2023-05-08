@@ -7,8 +7,8 @@ export default function AllFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/fans';
-    const serverLink = 'https://sdidemo.chickenkiller.com/fans';
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     let navigate = useNavigate();
 
@@ -17,6 +17,8 @@ export default function AllFans() {
 
     const[currentPage, setCurrentPage] = useState(1);
     const[npage, setNPages] = useState(0);
+    const[numbers1, setNumbers1] = useState([0, 1, 2, 3].slice(1));
+    const[numbers2, setNumbers2] = useState([]);
     const recordsPerPage = 100;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
@@ -26,14 +28,49 @@ export default function AllFans() {
     }, []);
 
     const loadFansWithPage=async(page)=>{
-        const result = await axios.get(`${serverLink}/pagination/${page - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
         setFans(result.data.content);
+
+        if(page === 1){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 2){
+            setNumbers1([0, 1, 2, 3, 4].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 3){
+            setNumbers1([0, 1, 2, 3, 4, 5].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === 4){
+            setNumbers1([0, 1, 2, 3, 4, 5, 6].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }else if(page === npage){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([npage - 2, npage - 1, npage].slice(1));
+        }else if(page === npage - 1){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1].slice(1));
+        }else if(page === npage - 2){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+        }else if(page === npage - 3){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+        }else if(page == npage - 4){
+            setNumbers1([0, 1, 2, 3].slice(1));
+            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4].slice(1));
+        }
+        else{
+            setNumbers1([0, 1, 2, 3, '...', page - 2, page - 1, page, page + 1, page + 2].slice(1));
+            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+        }
     }
 
     const loadFans=async()=>{
-        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setFans(result.data.content);
+        const lastpage = result.data.totalPages;
+        setNumbers2([lastpage - 3, lastpage - 2, lastpage - 1, lastpage].slice(1));
     }
   
     const deleteFan = async(id)=>{
@@ -60,6 +97,7 @@ export default function AllFans() {
         <div className='py-4'>
             <div className='py-2'>
                 <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addFan"}>Add Fan</Link>
+                <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "nationalities"}>Number of Nationalities</Link>
             </div>
             <div className='py-2'>
                 <form onSubmit={(e)=>onSubmit(e)}>
@@ -81,6 +119,7 @@ export default function AllFans() {
                         <th scope="col">Nationality</th>
                         <th scope="col">Occupation</th>
                         <th scope="col">Place Of Birth</th>
+                        <th scope="col">Number of Teams</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -95,10 +134,12 @@ export default function AllFans() {
                                 <td>{fan.nationality}</td>
                                 <td>{fan.occupation}</td>
                                 <td>{fan.placeOfBirth}</td>
+                                <td>{fan.counter}</td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewFan/${fan.fid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateFan/${fan.fid}`} >Edit</Link>
                                     <button className='btn btn-danger mx-1' onClick={()=>deleteFan(fan.fid)}>Delete</button>
+                                    <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}addTeamToFan/${fan.fid}`} >Add Team</Link>
                                 </td>
                             </tr>
                         ))
@@ -113,14 +154,27 @@ export default function AllFans() {
                         >Prev
                         </a>
                     </li>
-                    {/* {
-                        numbers.map((n, i) => (
+                    {
+                        numbers1.map((n, i) => (
+                            <li className={`page-item ${currentPage === n && n != '...' ? 'active' : ''}`} key={i}>
+                                <a href='#' className='page-link'
+                                onClick={() => changeCPage(n)}>{n}</a>
+                            </li>
+                        ))
+                    }
+
+                    <li className='page-item'>
+                        <a href='#' className='page-link'>...</a>
+                    </li>
+                    
+                    {   
+                        numbers2.map((n, i) => (
                             <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
                                 <a href='#' className='page-link'
                                 onClick={() => changeCPage(n)}>{n}</a>
                             </li>
                         ))
-                    } */}
+                    }
                     <li className='page-item'>
                         <a href='#' className='page-link'
                         onClick={nextPage}

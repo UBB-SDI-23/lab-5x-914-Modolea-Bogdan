@@ -1,0 +1,76 @@
+import { wait } from '@testing-library/user-event/dist/utils';
+import axios from 'axios';
+import React, { useState } from 'react'
+import { useNavigate, Link, useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export default function AddTeamToFan() {
+
+    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
+    const toAddURL = '';
+    const serverLink = 'http://localhost:8080/teams';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/teams';
+
+    let navigate = useNavigate();
+
+    const [fan, setFan] = useState({
+        fid: 0,
+        fanSince: 2011,
+        opinion: ''
+    });
+
+    const[teamName, setTeamName] = useState('');
+    const[teamID, setTeamID] = useState(0);
+    fan.fid = useParams().fid;
+
+    const{fid, fanSince, opinion} = fan;
+
+    const onInputChange=(e)=>{
+        setFan({...fan, [e.target.name]: e.target.value});
+    }
+
+    const onInputChange2 = (e) => {
+        setTeamName(e.target.value);
+    }
+
+    const getTeam = async(teamName) => {
+        const result = await axios.get(serverLink + `/getTeamByName/${teamName}`);
+        setTeamID(result.data.tid);
+    }
+
+    const onSubmit=async(e)=>{
+        e.preventDefault();
+
+        getTeam(teamName);
+        await axios.post(serverLink + `/${teamID}/fans`, fan);
+        navigate("/" + toAddURL +  "fans");
+    };
+
+  return (
+    <div className='container'>
+        <div className='row'>
+            <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
+                <h2 className='text-center m-4'>Add Fan</h2>
+
+                <form onSubmit={(e)=>onSubmit(e)}>
+                    <div className='mb-3'>
+                        <label htmlFor='teamName' className='form-label'>Their Team</label>
+                        <input type={'text'} className='form-control' name='teamName' placeholder='Their Team Name' value={teamName} onChange={(e)=>onInputChange2(e)}/>
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='fanSince' className='form-label'>Fan Since Year</label>
+                        <input type={'number'} className='form-control' name='fanSince' placeholder='Enter Year' value={fanSince} onChange={(e)=>onInputChange(e)}/>
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='opinion' className='form-label'>Their Opinion</label>
+                        <input type={'text'} className='form-control' name='opinion' placeholder='Opinion About Team' value={opinion} onChange={(e)=>onInputChange(e)}/>
+                    </div>
+                    <button type='submit' className='btn btn-outline-primary'>Add Fan</button>
+                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "fans"}>Cancel</Link>
+                </form>
+            </div> 
+        </div>
+    </div>
+  )
+}

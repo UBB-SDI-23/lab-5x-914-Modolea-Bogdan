@@ -36,7 +36,13 @@ public class TeamService {
         if (league == null)
             throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", teamRequest.getLeagueID()));
 
+        Page<Team> data = findTeamsWithPagination(0, 1);
+        int totalElems = (int) data.getTotalElements();
+        Team lastTeam = findTeamsWithPagination((totalElems - 1), 1).getContent().get(0);
+
+
         Team newTeam = new Team();
+        newTeam.setTid(lastTeam.getTid() + 1);
         newTeam.setName(teamRequest.getName());
         newTeam.setTop(teamRequest.getTop());
         newTeam.setJungle(teamRequest.getJungle());
@@ -73,9 +79,21 @@ public class TeamService {
         return teamGetAlls;
     }
 
+    public Team getTeamByName(String teamName) throws EntityNotFoundException {
+        Team team = teamRepository.findTeamByName(teamName);
+        if(team == null)
+            throw new EntityNotFoundException(String.format("Team with name %d doesn't exist!", teamName));
+
+        return team;
+    }
+
     public Page<Team> findTeamsWithPagination(int offset, int pageSize) throws EntityNotFoundException {
         Page<Team> teams = teamRepository.findAll(PageRequest.of(offset, pageSize));
         return teams;
+    }
+
+    public Page<TeamAndNoFans> findTeamsWithNoFans(int offset, int pageSize) {
+        return teamRepository.getTeamAndNoFans(PageRequest.of(offset, pageSize));
     }
 
     public List<TeamGetAll> findTeamsWithSorting(String field) throws EntityNotFoundException {
@@ -160,12 +178,14 @@ public class TeamService {
             throw new EntityNotFoundException(String.format("Fan with id %d doesn't exist!", id));
 
         FanOfTeam newFan = new FanOfTeam();
+        newFan.setId(fanOfTeamRepository.getFirstFreeID());
         newFan.setTeam(existingTeam);
         newFan.setFan(existingFan);
         newFan.setOpinion(fan.getOpinion());
         newFan.setFanSince(fan.getFanSince());
         existingFan.getSupporter().add(newFan);
         existingTeam.getSupporter().add(newFan);
+
 
         fanOfTeamRepository.save(newFan);
         return teamRepository.save(existingTeam);

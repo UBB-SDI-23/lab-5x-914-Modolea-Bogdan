@@ -1,7 +1,5 @@
 package com.example.a4.dto;
 
-import com.example.a4.entity.Fan;
-import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FansWithTeams {
-    private Fan fan;
-    private List<Team> teams;
+public class LeaguesAndNoTeams {
+    private int lid;
+    private String abbreviation;
+    private String region;
+    private int year;
+    private String bestPlayer;
+    private int audience;
+    private String description;
+    private long counter;
 }

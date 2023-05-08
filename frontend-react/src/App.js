@@ -17,6 +17,8 @@ import EditFan from './fan/EditFan';
 import ViewFan from './fan/ViewFan';
 import FilterFans from './fan/FilterFans';
 import StatisticalReport from './league/StatisticalReport';
+import NumberNationalities from './fan/NumberNationalities';
+import AddTeamToFan from './fan/AddTeamToFan';
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
           <Route exact path={"/updateFan/:id"} element={<EditFan />}></Route>
           <Route exact path={"/viewFan/:id"} element={<ViewFan />}></Route>
           <Route exact path={"/filterFans/:age"} element={<FilterFans />}></Route>
+          <Route exact path={"/nationalities"} element={<NumberNationalities/>}></Route>
+          <Route exact path={"/addTeamToFan/:fid"} element={<AddTeamToFan />}></Route>
         </Routes>
       </Router>
     </div>

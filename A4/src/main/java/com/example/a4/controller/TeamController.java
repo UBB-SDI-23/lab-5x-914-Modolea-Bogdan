@@ -49,8 +49,14 @@ public class TeamController {
     }
 
     @GetMapping("/pagination/{offset}/{pageSize}")
-    public ResponseEntity<Page<Team>> findAllTeamsWithSort(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+    public ResponseEntity<Page<Team>> findAllTeamsWithPagination(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
         Page<Team> allTeams = service.findTeamsWithPagination(offset, pageSize);
+        return ResponseEntity.ok(allTeams);
+    }
+
+    @GetMapping("/stats/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<TeamAndNoFans>> findAllTeamsAndNoFans(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+        Page<TeamAndNoFans> allTeams = service.findTeamsWithNoFans(offset, pageSize);
         return ResponseEntity.ok(allTeams);
     }
 
@@ -74,5 +80,10 @@ public class TeamController {
     public ResponseEntity<Void> deleteTeamFan(@PathVariable int teamID, @PathVariable int fanID) throws EntityNotFoundException {
         service.deleteTeamFan(teamID, fanID);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/getTeamByName/{teamName}")
+    public ResponseEntity<Team> getTeamByName(@PathVariable String teamName) throws EntityNotFoundException {
+        return ResponseEntity.ok(service.getTeamByName(teamName));
     }
 }

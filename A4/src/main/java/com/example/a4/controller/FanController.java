@@ -34,7 +34,7 @@ public class FanController {
 //    }
 
     @PostMapping
-    public ResponseEntity<Fan> addFan(@RequestBody @Valid FanRequest fanRequest){
+    public ResponseEntity<Fan> addFan(@RequestBody @Valid FanRequest fanRequest) throws EntityNotFoundException {
         return new ResponseEntity<>(service.saveFan(fanRequest), HttpStatus.CREATED);
     }
 
@@ -51,6 +51,12 @@ public class FanController {
     @GetMapping("/pagination/{offset}/{pageSize}")
     public ResponseEntity<Page<Fan>> findAllFansWithPagination(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
         Page<Fan> allFans = service.findFansWithPagination(offset, pageSize);
+        return ResponseEntity.ok(allFans);
+    }
+
+    @GetMapping("/stats/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<FanAndNoTeams>> findFanAndNoTeam(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+        Page<FanAndNoTeams> allFans = service.findFanAndNoTeams(offset, pageSize);
         return ResponseEntity.ok(allFans);
     }
 
@@ -76,8 +82,13 @@ public class FanController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/filter/{age}")
-    public ResponseEntity<List<FanGetAll>> findByAgeGreaterThan(@PathVariable int age) throws EntityNotFoundException{
-        return ResponseEntity.ok(service.filterFansByAge(age));
+    @GetMapping("/filter/{age}/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<FanGetAll>> findByAgeGreaterThan(@PathVariable int age, @PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException{
+        return ResponseEntity.ok(service.filterFansByAge(age, offset, pageSize));
+    }
+
+    @GetMapping("/numberNations/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<NumberNationalities>> findNumberNationalities(@PathVariable int offset, @PathVariable int pageSize) {
+        return ResponseEntity.ok(service.findNumberNationalities(offset, pageSize));
     }
 }

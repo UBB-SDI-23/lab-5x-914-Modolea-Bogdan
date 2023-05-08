@@ -3,6 +3,7 @@ package com.example.a4.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,14 +20,18 @@ import java.util.List;
 @Table(name = "FAN_TBL")
 public class Fan {
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private int fid;
 
     @NotBlank(message = "Please insert a name")
     private String name;
+
+    @Min(1)
     private int age;    // I know it's not ok, but I need it :)
     private String nationality;
     private String occupation;
+
+    @NotBlank(message = "Don't leave this field blank, please")
     private String placeOfBirth;
 
     @OneToMany(mappedBy = "fan")

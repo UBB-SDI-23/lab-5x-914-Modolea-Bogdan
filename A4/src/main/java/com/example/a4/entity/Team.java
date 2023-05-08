@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "TEAM_TBL")
 public class Team {
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private int tid;
 
     @NotBlank(message = "Don't leave this field blank, please")

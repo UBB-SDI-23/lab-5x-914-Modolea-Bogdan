@@ -10,7 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TeamsAndAge {
-    private Team team;
-    private float age;
+public class TeamAndNoFans {
+    private int tid;
+    private String name;
+    private String top;
+    private String jungle;
+    private String mid;
+    private String bot;
+    private String support;
+    private long counter;
 }

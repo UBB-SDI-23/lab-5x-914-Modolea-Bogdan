@@ -2,6 +2,7 @@ package com.example.a4.controller;
 
 import com.example.a4.dto.LeagueGetAll;
 import com.example.a4.dto.LeagueRequest;
+import com.example.a4.dto.LeaguesAndNoTeams;
 import com.example.a4.dto.NationalitiesAndLeagues;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
@@ -43,6 +44,12 @@ public class LeagueController {
         return ResponseEntity.ok(allLeagues);
     }
 
+    @GetMapping("/stats/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<LeaguesAndNoTeams>> findAllLeaguesAndNoTeams(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+        Page<LeaguesAndNoTeams> allLeagues = service.findLeaguesAndNoTeams(offset, pageSize);
+        return ResponseEntity.ok(allLeagues);
+    }
+
     @GetMapping("/{leagueID}")
     public ResponseEntity<League> findLeagueByID(@PathVariable int leagueID) throws EntityNotFoundException{
         return ResponseEntity.ok(service.getLeagueById(leagueID));
@@ -59,13 +66,18 @@ public class LeagueController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/number-of-nations-that-supports-league")
-    public ResponseEntity<List<NationalitiesAndLeagues>> getLeaguesByNations() throws EntityNotFoundException{
-        return ResponseEntity.ok(service.getLeaguesByNations());
+    @GetMapping("/number-of-nations-that-supports-league/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<NationalitiesAndLeagues>> getLeaguesByNations(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException{
+        return ResponseEntity.ok(service.getLeaguesByNations(offset, pageSize));
     }
 
     @PostMapping("/{leagueID}/teams")
     public ResponseEntity<League> addTeamListToLeague(@PathVariable int leagueID, @RequestBody List<Integer> teams) throws EntityNotFoundException{
         return new ResponseEntity<>(service.addTeamListToLeague(leagueID, teams), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-league-by-name/{league}")
+    public ResponseEntity<League> getLeagueByName(@PathVariable String league) throws EntityNotFoundException {
+        return ResponseEntity.ok(service.getLeagueByName(league));
     }
 }
