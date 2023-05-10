@@ -35,10 +35,4 @@ public interface FanRepository extends JpaRepository<Fan, Integer> {
             "GROUP BY f.nationality"
     )
     Page<NumberNationalities> findNumberNationalities(Pageable pageable);
-
-    @Query("SELECT new com.example.a4.dto.FanGetAll(" +
-            "f.fid, f.name, f.age, f.nationality, f.occupation, f.placeOfBirth, f.user) " +
-            "FROM Fan f"
-    )
-    Page<FanGetAll> findAllFans(Pageable pageable);
 }

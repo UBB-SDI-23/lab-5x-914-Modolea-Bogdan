@@ -65,11 +65,6 @@ public class FanService {
         return fans;
     }
 
-    public Page<FanGetAll> findAllFansWithUsers(int offset, int pageSize) {
-        Page<FanGetAll> fanGetAlls = fanRepository.findAllFans(PageRequest.of(offset, pageSize));
-        return fanGetAlls;
-    }
-
     public Page<FanAndNoTeams> findFanAndNoTeams(int offset, int pageSize) {
         Page<FanAndNoTeams> fanAndNoTeams = fanRepository.findFanAndNoTeams(PageRequest.of(offset, pageSize));
         return fanAndNoTeams;
