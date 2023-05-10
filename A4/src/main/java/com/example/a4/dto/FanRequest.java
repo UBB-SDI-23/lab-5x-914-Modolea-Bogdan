@@ -16,4 +16,5 @@ public class FanRequest {
     private String nationality;
     private String occupation;
     private String placeOfBirth;
+    private String username;
 }

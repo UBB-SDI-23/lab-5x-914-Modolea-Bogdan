@@ -23,7 +23,7 @@ public interface FanRepository extends JpaRepository<Fan, Integer> {
     Page<FanGetAll> filterFansByAge(int age, Pageable pageable);
 
     @Query("SELECT new com.example.a4.dto.FanAndNoTeams(" +
-            "f.fid, f.name, f.age, f.nationality, f.occupation, f.placeOfBirth, COUNT(t.team.tid)) " +
+            "f.fid, f.name, f.age, f.nationality, f.occupation, f.placeOfBirth, COUNT(t.team.tid), f.user.name) " +
             "FROM Fan f LEFT JOIN f.supporter t " +
             "GROUP BY f.fid"
     )
@@ -35,4 +35,10 @@ public interface FanRepository extends JpaRepository<Fan, Integer> {
             "GROUP BY f.nationality"
     )
     Page<NumberNationalities> findNumberNationalities(Pageable pageable);
+
+    @Query("SELECT new com.example.a4.dto.FanGetAll(" +
+            "f.fid, f.name, f.age, f.nationality, f.occupation, f.placeOfBirth, f.user) " +
+            "FROM Fan f"
+    )
+    Page<FanGetAll> findAllFans(Pageable pageable);
 }

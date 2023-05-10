@@ -10,6 +10,8 @@ export default function AllFans() {
     const serverLink = 'http://localhost:8080/fans';
     // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
+    console.log(localStorage.getItem('login'));
+
     let navigate = useNavigate();
 
     const[fans, setFans] = useState([]);
@@ -120,6 +122,7 @@ export default function AllFans() {
                         <th scope="col">Occupation</th>
                         <th scope="col">Place Of Birth</th>
                         <th scope="col">Number of Teams</th>
+                        <th scope="col">Added by</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -135,6 +138,7 @@ export default function AllFans() {
                                 <td>{fan.occupation}</td>
                                 <td>{fan.placeOfBirth}</td>
                                 <td>{fan.counter}</td>
+                                <td><Link to={`/user/${fan.username}`}>{fan.username}</Link></td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewFan/${fan.fid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateFan/${fan.fid}`} >Edit</Link>

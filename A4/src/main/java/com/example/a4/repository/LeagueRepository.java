@@ -26,7 +26,7 @@ public interface LeagueRepository extends JpaRepository<League, Integer> {
     League getLeagueByName(String league);
 
     @Query("SELECT new com.example.a4.dto.LeaguesAndNoTeams(" +
-            "l.lid, l.abbreviation, l.region, l.year, l.bestPlayer, l.audience, l.description, COUNT(t.tid)) " +
+            "l.lid, l.abbreviation, l.region, l.year, l.bestPlayer, l.audience, l.description, COUNT(t.tid), l.user.name) " +
             "FROM League l LEFT JOIN l.teams t " +
             "GROUP BY l.lid "
     )

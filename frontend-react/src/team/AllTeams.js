@@ -103,6 +103,7 @@ export default function AllTeams() {
                         <th scope="col">Botlaner</th>
                         <th scope="col">Support</th>
                         <th scope="col">Number of Fans</th>
+                        <th scope="col">Added by</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -119,6 +120,7 @@ export default function AllTeams() {
                                 <td>{team.bot}</td>
                                 <td>{team.support}</td>
                                 <td>{team.counter}</td>
+                                <td><Link to={`/user/${team.username}`}>{team.username}</Link></td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewTeam/${team.tid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateTeam/${team.tid}`} >Edit</Link>

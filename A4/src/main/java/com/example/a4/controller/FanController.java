@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class FanController {
     }
 
     @GetMapping("/pagination/{offset}/{pageSize}")
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Page<Fan>> findAllFansWithPagination(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
         Page<Fan> allFans = service.findFansWithPagination(offset, pageSize);
         return ResponseEntity.ok(allFans);
@@ -61,6 +63,7 @@ public class FanController {
     }
 
     @GetMapping("/{fanID}")
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<FanByID> findFanByID(@PathVariable int fanID) throws EntityNotFoundException {
         return ResponseEntity.ok(service.getFanById(fanID));
     }

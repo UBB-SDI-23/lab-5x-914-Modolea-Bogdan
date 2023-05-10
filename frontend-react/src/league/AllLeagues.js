@@ -8,7 +8,6 @@ export default function AllLeagues() {
     const toAddURL = '';
     const serverLink = 'http://localhost:8080/leagues';
     // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const[leagues, setLeagues] = useState([]);
 
@@ -96,6 +95,7 @@ export default function AllLeagues() {
                         <th scope="col">Audience</th>
                         <th scope="col">Description</th>
                         <th scope="col">Number of Teams</th>
+                        <th scope="col">Added by</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -112,6 +112,7 @@ export default function AllLeagues() {
                                 <td>{league.audience}</td>
                                 <td>{league.description}</td>
                                 <td>{league.counter}</td>
+                                <td><Link to={`/user/${league.username}`}>{league.username}</Link></td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewLeague/${league.lid}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateLeague/${league.lid}`} >Edit</Link>

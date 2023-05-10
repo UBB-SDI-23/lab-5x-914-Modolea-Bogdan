@@ -5,14 +5,17 @@ import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.entity.user.UserInfo;
 import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.FanOfTeamRepository;
 import com.example.a4.repository.FanRepository;
 import com.example.a4.repository.TeamRepository;
+import com.example.a4.repository.UserInfoRepository;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,11 +28,17 @@ public class FanService {
     private FanRepository fanRepository;
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     public Fan saveFan(FanRequest fanRequest) throws EntityNotFoundException {
         Page<Fan> data = findFansWithPagination(0, 1);
         int totalElems = (int) data.getTotalElements();
         Fan lastFan = findFansWithPagination((totalElems - 1), 1).getContent().get(0);
+
+        Optional<UserInfo> userInfo = userInfoRepository.findByName(fanRequest.getUsername());
+        System.out.println(userInfo.get());
+        System.out.println(fanRequest.getUsername());
 
         Fan newFan = new Fan();
         newFan.setFid(lastFan.getFid() + 1);
@@ -38,6 +47,7 @@ public class FanService {
         newFan.setOccupation(fanRequest.getOccupation());
         newFan.setAge(fanRequest.getAge());
         newFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
+        newFan.setUser(userInfo.get());
 
         return fanRepository.save(newFan);
     }
@@ -53,6 +63,11 @@ public class FanService {
     public Page<Fan> findFansWithPagination(int offset, int pageSize) throws EntityNotFoundException {
         Page<Fan> fans = fanRepository.findAll(PageRequest.of(offset, pageSize));
         return fans;
+    }
+
+    public Page<FanGetAll> findAllFansWithUsers(int offset, int pageSize) {
+        Page<FanGetAll> fanGetAlls = fanRepository.findAllFans(PageRequest.of(offset, pageSize));
+        return fanGetAlls;
     }
 
     public Page<FanAndNoTeams> findFanAndNoTeams(int offset, int pageSize) {

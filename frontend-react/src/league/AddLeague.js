@@ -10,6 +10,7 @@ export default function AddTeam() {
     const toAddURL = '';
 
     const serverLink = 'http://localhost:8080/leagues';
+    const serverLinkUser = 'http://localhost:8080/user'
     // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
@@ -21,10 +22,11 @@ export default function AddTeam() {
         year: 0,
         bestPlayer: '',
         audience: 0,
-        description: ''
+        description: '',
+        username: ''
     })
 
-    const{abbreviation, region, year, bestPlayer, audience, description} = league;
+    const{abbreviation, region, year, bestPlayer, audience, description, username} = league;
 
     const onInputChange=(e)=>{
         setLeague({...league, [e.target.name]: e.target.value});
@@ -45,6 +47,17 @@ export default function AddTeam() {
                 theme: "light",
                 });
         }
+
+        const token = JSON.parse(localStorage.getItem('login')).store;
+
+
+        console.log(token);
+        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+        console.log(currentUsername.data);
+
+        league.username = currentUsername.data;
+
+        console.log(league);
 
         await axios.post(serverLink, league);
         navigate("/" + toAddURL +  "leagues");

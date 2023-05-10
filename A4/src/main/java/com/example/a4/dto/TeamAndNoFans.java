@@ -19,4 +19,5 @@ public class TeamAndNoFans {
     private String bot;
     private String support;
     private long counter;
+    private String username;
 }

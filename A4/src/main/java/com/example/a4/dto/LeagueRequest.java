@@ -19,4 +19,5 @@ public class LeagueRequest {
     private String bestPlayer;
     private int audience;
     private String description;
+    private String username;
 }

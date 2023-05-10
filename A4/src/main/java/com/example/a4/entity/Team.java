@@ -1,5 +1,6 @@
 package com.example.a4.entity;
 
+import com.example.a4.entity.user.UserInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -42,4 +43,9 @@ public class Team {
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     List<FanOfTeam> supporter;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    @JsonIgnore
+    private UserInfo user;
 }

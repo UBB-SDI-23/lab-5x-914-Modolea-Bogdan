@@ -18,4 +18,5 @@ public class TeamRequest {
     private String bot;
     private String support;
     private int leagueID;
+    private String username;
 }

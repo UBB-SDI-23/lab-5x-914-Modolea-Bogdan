@@ -9,7 +9,10 @@ export default function AddFan() {
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
     const serverLink = 'http://localhost:8080/fans';
+    const serverLinkUser = 'http://localhost:8080/user'
     // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
+
+    console.log(localStorage.getItem('login'));
 
     let navigate = useNavigate();
 
@@ -18,10 +21,11 @@ export default function AddFan() {
         age: 0,
         nationality: '',
         occupation: '',
-        placeOfBirth: ''
+        placeOfBirth: '',
+        username: ''
     })
 
-    const{name, age, nationality, occupation, placeOfBirth} = fan;
+    const{name, age, nationality, occupation, placeOfBirth, username} = fan;
 
     const onInputChange=(e)=>{
         setFan({...fan, [e.target.name]: e.target.value});
@@ -70,6 +74,16 @@ export default function AddFan() {
             return;
         }
 
+        const token = JSON.parse(localStorage.getItem('login')).store;
+
+
+        console.log(token);
+        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+        console.log(currentUsername.data);
+
+        fan.username = currentUsername.data;
+
+        console.log(fan);
 
         await axios.post(serverLink, fan);
         navigate("/" + toAddURL +  "fans");

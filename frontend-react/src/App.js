@@ -19,6 +19,9 @@ import FilterFans from './fan/FilterFans';
 import StatisticalReport from './league/StatisticalReport';
 import NumberNationalities from './fan/NumberNationalities';
 import AddTeamToFan from './fan/AddTeamToFan';
+import Login from './auth/Login';
+import Register from './auth/Register';
+import User from './user/User';
 
 function App() {
   return (
@@ -44,6 +47,9 @@ function App() {
           <Route exact path={"/filterFans/:age"} element={<FilterFans />}></Route>
           <Route exact path={"/nationalities"} element={<NumberNationalities/>}></Route>
           <Route exact path={"/addTeamToFan/:fid"} element={<AddTeamToFan />}></Route>
+          <Route exact path={"/login"} element={<Login />}></Route>
+          <Route exact path={"/register"} element={<Register />}></Route>
+          <Route exact path={"/user/:username"} element={<User />}></Route>
         </Routes>
       </Router>
     </div>

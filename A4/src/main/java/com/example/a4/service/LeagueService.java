@@ -5,11 +5,9 @@ import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.entity.user.UserInfo;
 import com.example.a4.exception.EntityNotFoundException;
-import com.example.a4.repository.FanOfTeamRepository;
-import com.example.a4.repository.FanRepository;
-import com.example.a4.repository.LeagueRepository;
-import com.example.a4.repository.TeamRepository;
+import com.example.a4.repository.*;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +26,8 @@ public class LeagueService {
     private FanRepository fanRepository;
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     public League saveLeague(LeagueRequest leagueRequest) throws EntityNotFoundException {
         League newLeague = new League();
@@ -38,6 +38,10 @@ public class LeagueService {
         leagueRequest.setLid(lastLeague.getLid() + 1);
         newLeague.setLid(lastLeague.getLid() + 1);
 
+        Optional<UserInfo> userInfo = userInfoRepository.findByName(leagueRequest.getUsername());
+        System.out.println(userInfo.get());
+        System.out.println(leagueRequest.getUsername());
+
         //ObjectMapper.map(leagueRequest, newLeague);
         newLeague.setLid(lastLeague.getLid() + 1);
         newLeague.setYear(leagueRequest.getYear());
@@ -46,6 +50,7 @@ public class LeagueService {
         newLeague.setAudience(leagueRequest.getAudience());
         newLeague.setBestPlayer(leagueRequest.getBestPlayer());
         newLeague.setDescription(leagueRequest.getDescription());
+        newLeague.setUser(userInfo.get());
 
         System.out.println(newLeague);
         return leagueRepository.save(newLeague);

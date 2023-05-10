@@ -10,9 +10,11 @@ export default function AddTeam() {
 
     const toAddURL = '';
     const serverLink = 'http://localhost:8080/';
+    const serverLinkUser = 'http://localhost:8080/user'
     // const serverLink = 'https://sdidemo.chickenkiller.com/';
 
     let navigate = useNavigate();
+    console.log(localStorage.getItem('login'));
     
     const[league, setLeague] = useState('');
 
@@ -23,10 +25,11 @@ export default function AddTeam() {
         mid: '',
         bot: '',
         support: '',
-        leagueID: 0
+        leagueID: 0,
+        username: ''
     })
 
-    const{name, top, jungle, mid, bot, support} = team;
+    const{name, top, jungle, mid, bot, support, username} = team;
 
     const onInputChange=(e)=>{
         setTeam({...team, [e.target.name]: e.target.value});
@@ -56,6 +59,15 @@ export default function AddTeam() {
                 });
             return;
         }
+
+        const token = JSON.parse(localStorage.getItem('login')).store;
+        console.log(token);
+        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+        console.log(currentUsername.data);
+
+        team.username = currentUsername.data;
+
+        console.log(team);
 
         await axios.post(serverLink + "teams", team);
         navigate("/" + toAddURL +  "teams");

@@ -1,5 +1,6 @@
 package com.example.a4.dto;
 
+import com.example.a4.entity.user.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

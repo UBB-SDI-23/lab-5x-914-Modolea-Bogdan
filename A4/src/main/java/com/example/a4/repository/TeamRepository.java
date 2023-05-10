@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Integer> {
     @Query("SELECT new com.example.a4.dto.TeamAndNoFans(" +
-            "t.tid, t.name, t.top, t.jungle, t.mid, t.bot, t.support, COUNT(t.tid)) " +
+            "t.tid, t.name, t.top, t.jungle, t.mid, t.bot, t.support, COUNT(t.tid), t.user.name) " +
             "FROM Team t LEFT JOIN t.supporter f " +
             "GROUP BY t.tid"
     )

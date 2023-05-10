@@ -5,6 +5,7 @@ import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.entity.user.UserInfo;
 import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.*;
 import com.example.a4.utils.ObjectMapper;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,8 @@ public class TeamService {
     private FanRepository fanRepository;
     @Autowired
     private FanOfTeamRepository fanOfTeamRepository;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     public Team saveTeam(TeamRequest teamRequest) throws EntityNotFoundException {
         League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
@@ -40,6 +44,7 @@ public class TeamService {
         int totalElems = (int) data.getTotalElements();
         Team lastTeam = findTeamsWithPagination((totalElems - 1), 1).getContent().get(0);
 
+        Optional<UserInfo> userInfo = userInfoRepository.findByName(teamRequest.getUsername());
 
         Team newTeam = new Team();
         newTeam.setTid(lastTeam.getTid() + 1);
@@ -50,6 +55,7 @@ public class TeamService {
         newTeam.setBot(teamRequest.getBot());
         newTeam.setSupport(teamRequest.getSupport());
         newTeam.setLeague(league);
+        newTeam.setUser(userInfo.get());
 
         return teamRepository.save(newTeam);
     }

@@ -1,5 +1,7 @@
 package com.example.a4.entity;
 
+import com.example.a4.entity.user.UserInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -32,4 +34,9 @@ public class League {
 
     @OneToMany(mappedBy="league", fetch = FetchType.EAGER)
     private List<Team> teams;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    @JsonIgnore
+    private UserInfo user;
 }

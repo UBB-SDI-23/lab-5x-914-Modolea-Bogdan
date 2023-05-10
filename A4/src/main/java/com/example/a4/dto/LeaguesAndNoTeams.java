@@ -21,4 +21,5 @@ public class LeaguesAndNoTeams {
     private int audience;
     private String description;
     private long counter;
+    private String username;
 }
