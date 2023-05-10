@@ -68,7 +68,7 @@ export default function AllFans() {
     }
 
     const loadFans=async()=>{
-        const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setFans(result.data.content);
         const lastpage = result.data.totalPages;
