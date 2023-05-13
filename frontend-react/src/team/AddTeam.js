@@ -60,6 +60,21 @@ export default function AddTeam() {
             return;
         }
 
+        if(!team.leagueID) {
+            toast.warn('League not found!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+
+
         const token = JSON.parse(localStorage.getItem('login')).store;
         console.log(token);
         const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);

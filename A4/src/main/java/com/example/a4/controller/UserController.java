@@ -1,6 +1,7 @@
 package com.example.a4.controller;
 
 import com.example.a4.dto.AuthRequest;
+import com.example.a4.dto.DateAndCode;
 import com.example.a4.entity.user.UserInfo;
 import com.example.a4.service.JwtService;
 import com.example.a4.service.UserService;
@@ -25,7 +26,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public String addUser(@RequestBody UserInfo userInfo){
+    public DateAndCode addUser(@RequestBody UserInfo userInfo){
         userInfo.setId(userService.getFirstFreeID());
         userInfo.setRoles("ROLE_USER");
         userInfo.setEnabled(false);

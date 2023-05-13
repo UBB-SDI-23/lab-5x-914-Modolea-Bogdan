@@ -7,8 +7,8 @@ export default function AllFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/fans';
-    const serverLink = 'https://sdidemo.chickenkiller.com/fans';
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     console.log(localStorage.getItem('login'));
 
@@ -30,7 +30,7 @@ export default function AllFans() {
     }, []);
 
     const loadFansWithPage=async(page)=>{
-        const result = await axios.get(`${serverLink}/pagination/${page - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
         setFans(result.data.content);
 
         if(page === 1){
@@ -68,7 +68,7 @@ export default function AllFans() {
     }
 
     const loadFans=async()=>{
-        const result = await axios.get(`${serverLink}/pagination/${currentPage - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setFans(result.data.content);
         const lastpage = result.data.totalPages;

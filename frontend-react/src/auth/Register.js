@@ -14,8 +14,8 @@ class Register extends React.Component {
             age: 0,
             location: '',
             verificationCode: '',
-            register: false,
-            store: null
+            confirmationCodeSentAt: null,
+            register: null
         }
     }
 
@@ -26,27 +26,46 @@ class Register extends React.Component {
     }
 
     storeCollector() {
-        this.setState({ register: true, store: null });
+        let register = JSON.parse(localStorage.getItem('register'));
+        if (register) {
+            this.setState({ register: true });
+        }
     }
 
     async register() {
         const result = await axios.post('http://localhost:8080/user/register', this.state);
-        console.log(result.data);
-        this.verifyCode = result.data;
-        this.state.verificationCode = result.data;
+        console.log(result);
+        this.verifyCode = result.data.code;
+        this.state.verificationCode = result.data.code;
+        this.state.confirmationCodeSentAt = result.data.registerAt;
+
+        localStorage.setItem('register', JSON.stringify({
+            state: this.state,
+            register: false
+        }))
+
         this.storeCollector();
-        console.log(this.state);
+        //console.log(this.state);
     }
 
     async verify() {
+        this.state = JSON.parse(localStorage.getItem('register')).state;
         console.log(this.state);
-        const result = await axios.put(`http://localhost:8080/user/register/verify/${this.verifyCode}`, this.state);
-        console.log(result.data);
+        console.log(this.state.verificationCode);
+        const result = await axios.put(`http://localhost:8080/user/register/verify/${this.state.verificationCode}`, this.state);
+        //console.log(result.data);
+
+        localStorage.setItem('register', JSON.stringify({
+            register: true
+        }))
+
         this.storeCollector();
-        console.log(this.state);
+        window.location.href = '/';
+        //console.log(this.state);
     }
 
     cancel() {
+        localStorage.clear();
         this.setState({ register: false });
     }
 
