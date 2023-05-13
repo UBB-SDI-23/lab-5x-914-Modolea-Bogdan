@@ -1,5 +1,6 @@
 package com.example.a4.service;
 
+import com.example.a4.dto.DateAndCode;
 import com.example.a4.entity.user.UserInfo;
 import com.example.a4.repository.UserInfoRepository;
 import net.bytebuddy.utility.RandomString;
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,26 +23,24 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String addUser(UserInfo userInfo) {
+    public DateAndCode addUser(UserInfo userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
 
         String randomCode = RandomString.make(16);
 //        System.out.println(randomCode);
         userInfo.setVerificationCode(randomCode);
-
+        userInfo.setConfirmationCodeSentAt(LocalDateTime.now());
+        System.out.println(userInfo.getConfirmationCodeSentAt());
 
         userInfoRepository.save(userInfo);
-        return userInfo.getVerificationCode();
+        return new DateAndCode(userInfo.getVerificationCode(), userInfo.getConfirmationCodeSentAt());
     }
 
-    public String verifyUser(String code, UserInfo userInfo){
-        System.out.println(code);
-        System.out.println(userInfo.getVerificationCode());
-        if(Objects.equals(code, userInfo.getVerificationCode())) {
+    public String verifyUser(String code, UserInfo userInfo) {
+        System.out.println(userInfo.getConfirmationCodeSentAt());
+        if (Objects.equals(code, userInfo.getVerificationCode()) && Duration.between(userInfo.getConfirmationCodeSentAt(), LocalDateTime.now()).toMinutes() <= 10) {
             userInfo.setEnabled(true);
-            System.out.println(userInfo);
             UserInfo user = userInfoRepository.findByName(userInfo.getName()).get();
-//            UserInfo user = userInfoRepository.findByName(userInfo.getName());
             user.setEnabled(true);
             System.out.println(user);
             userInfoRepository.save(user);

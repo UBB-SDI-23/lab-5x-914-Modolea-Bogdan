@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -17,8 +19,10 @@ public class UserInfo {
     private String email;
     private String password;
     private String roles;
+
     private boolean enabled;
     private String verificationCode;
+    private LocalDateTime confirmationCodeSentAt;
 
     private String age;
     private String location;
