@@ -226,13 +226,14 @@ class Register extends React.Component {
                             <input className='form-control' placeholder='Enter Location' type='text' onChange={(event) => this.setState({ location: event.target.value })} />
                         </div>
                         <button className='btn btn-outline-primary' onClick={() => this.register()}>Register</button>
+                        <Link className='btn btn-outline-danger mx-2' to={"/"}>Back</Link>
                         <ToastContainer />
                     </div>
                 :
                 <div>
                     <h1>You have 10 minutes to verify account!</h1>
                     <button className='btn btn-primary my-2' onClick={() => this.verify()}>Verify</button>
-                    <button className='btn btn-primary my-2' onClick={() => this.cancel()}>Cancel</button>
+                    {/* <button className='btn btn-outline-danger mx-2' onClick={() => this.cancel()}>Cancel</button> */}
                 </div>
             }
             </div>

@@ -95,6 +95,7 @@ class Login extends React.Component {
                             <input className='form-control' placeholder='Enter Password' type='password' onChange={(event) => this.setState({ password: event.target.value })} /> <br /> <br />
                         </div>
                         <button className='btn btn-outline-primary' onClick={() => this.login()}>Login</button>
+                        <Link className='btn btn-outline-danger mx-2' to={"/"}>Back</Link>
                         <ToastContainer />
                     </div>
                 :
