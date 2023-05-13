@@ -3,6 +3,8 @@ import axios from 'axios';
 import Home from '../pages/Home';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class Register extends React.Component {
     constructor() {
@@ -32,19 +34,147 @@ class Register extends React.Component {
         }
     }
 
+    isEmail(str) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(str);
+    };
+
     async register() {
-        const result = await axios.post('http://localhost:8080/user/register', this.state);
-        console.log(result);
-        this.verifyCode = result.data.code;
-        this.state.verificationCode = result.data.code;
-        this.state.confirmationCodeSentAt = result.data.registerAt;
+        const data = axios.get(`http://localhost:8080/user/${this.state.name}`);
+        console.log(data);
 
-        localStorage.setItem('register', JSON.stringify({
-            state: this.state,
-            register: false
-        }))
+        if(this.state.name === '') {
+            toast.warn('The name must not be left empty', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(data !== null) {
+            toast.warn('The name must be unique', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(this.state.email === '') {
+            toast.warn('The email must not be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(!this.isEmail(this.state.email)) {
+            toast.warn('The email must be a valid email!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(this.state.password === '') {
+            toast.warn('The password must not be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(this.state.age === 0) {
+            toast.warn('The age must not be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(!isNaN(Number(this.state.age))){
+            toast.warn('The age must be a number!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(this.state.location === '') {
+            toast.warn('The location must not be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
 
-        this.storeCollector();
+        try{
+            const result = await axios.post('http://localhost:8080/user/register', this.state);
+            // console.log(result);
+            this.verifyCode = result.data.code;
+            this.state.verificationCode = result.data.code;
+            this.state.confirmationCodeSentAt = result.data.registerAt;
+
+            localStorage.setItem('register', JSON.stringify({
+                state: this.state,
+                register: false
+            }))
+
+            this.storeCollector();
+        }
+        catch(err) {
+            toast.warn('Something went wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
         //console.log(this.state);
     }
 
@@ -73,14 +203,30 @@ class Register extends React.Component {
         return (
             <div>
                 { !this.state.register ?
-                    <div>
-                        <h1>Register</h1>
-                        <input type='text' onChange={(event) => this.setState({ name: event.target.value })} /> <br /> <br />
-                        <input type='text' onChange={(event) => this.setState({ email: event.target.value })} /> <br /> <br />
-                        <input type='text' onChange={(event) => this.setState({ password: event.target.value })} /> <br /> <br />
-                        <input type='text' onChange={(event) => this.setState({ age: event.target.value })} /> <br /> <br />
-                        <input type='text' onChange={(event) => this.setState({ location: event.target.value })} /> <br /> <br />
-                        <button onClick={() => this.register()}>Register</button>
+                    <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
+                        <h2 className='text-center m-4'>Register</h2>
+                        <div className='mb-3'>
+                            <label className='form-label'>Username</label>
+                            <input className='form-control' placeholder='Enter Username' type='text' onChange={(event) => this.setState({ name: event.target.value })} />
+                        </div>
+                        <div className='mb-3'>
+                            <label className='form-label'>Email</label>
+                            <input className='form-control' placeholder='Enter Email' type='text' onChange={(event) => this.setState({ email: event.target.value })} />
+                        </div>
+                        <div className='mb-3'>
+                            <label className='form-label'>Password</label>
+                            <input className='form-control' placeholder='Enter Password' type='password' onChange={(event) => this.setState({ password: event.target.value })} />
+                        </div>
+                        <div className='mb-3'>
+                            <label className='form-label'>Age</label>
+                            <input className='form-control' placeholder='Enter Age' type='text' onChange={(event) => this.setState({ age: event.target.value })} />
+                        </div>
+                        <div className='mb-3'>
+                            <label className='form-label'>Location</label>
+                            <input className='form-control' placeholder='Enter Location' type='text' onChange={(event) => this.setState({ location: event.target.value })} />
+                        </div>
+                        <button className='btn btn-outline-primary' onClick={() => this.register()}>Register</button>
+                        <ToastContainer />
                     </div>
                 :
                 <div>

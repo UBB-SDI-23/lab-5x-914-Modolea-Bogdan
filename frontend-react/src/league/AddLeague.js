@@ -26,6 +26,8 @@ export default function AddTeam() {
         username: ''
     })
 
+    const possibleRegions = ['EU', 'NA', 'PCS', 'JP', 'KR', 'CN', 'OCE'];
+
     const{abbreviation, region, year, bestPlayer, audience, description, username} = league;
 
     const onInputChange=(e)=>{
@@ -35,7 +37,47 @@ export default function AddTeam() {
     const onSubmit=async(e)=>{
         e.preventDefault();
         
-        if(league.year < 2010 || league.year > 2023){
+        
+        if(league.abbreviation === ''){
+            toast.warn('Name is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.region === ''){
+            toast.warn('Region is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(possibleRegions.includes(league.region) === false){
+            toast.warn('Region is not correct!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.year < 2010 || league.year > 2023){
             toast.warn('Year range is wrong!', {
                 position: "top-right",
                 autoClose: 3000,
@@ -45,22 +87,90 @@ export default function AddTeam() {
                 draggable: true,
                 progress: undefined,
                 theme: "light",
-                });
+            });
+            return;
+        }
+        else if(league.year === 0){
+            toast.warn('Year is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.bestPlayer === ''){
+            toast.warn('Best Player is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.audience < 0){
+            toast.warn('Audience can not be a negative number!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.description === ''){
+            toast.warn('Description is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
         }
 
-        const token = JSON.parse(localStorage.getItem('login')).store;
+        try{
+            const token = JSON.parse(localStorage.getItem('login')).store;
 
 
-        console.log(token);
-        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
-        console.log(currentUsername.data);
+            console.log(token);
+            const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+            console.log(currentUsername.data);
 
-        league.username = currentUsername.data;
+            league.username = currentUsername.data;
 
-        console.log(league);
+            console.log(league);
 
-        await axios.post(serverLink, league);
-        navigate("/" + toAddURL +  "leagues");
+            await axios.post(serverLink, league);
+            navigate("/" + toAddURL +  "leagues");
+        }catch(err){
+            console.log(err);
+            toast.error('Error occured!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true, 
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
 
     };
 

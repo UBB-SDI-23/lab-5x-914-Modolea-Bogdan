@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function EditTeam() {
 
@@ -24,6 +25,8 @@ export default function EditTeam() {
 
     const{abbreviation, region, year, bestPlayer, audience} = league;
 
+    const possibleRegions = ['EU', 'NA', 'PCS', 'JP', 'KR', 'CN', 'OCE'];
+
     const onInputChange=(e)=>{
         setLeague({...league, [e.target.name]: e.target.value});
     }
@@ -33,9 +36,130 @@ export default function EditTeam() {
     }, []);
 
     const onSubmit=async(e)=>{
-      e.preventDefault();
-      await axios.put(serverLink + `/${id}`, league);
-      navigate("/" + toAddURL +  "leagues");
+        e.preventDefault();
+
+        if(league.name === ''){
+            toast.warn('Name is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.region === ''){
+            toast.warn('Region is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(possibleRegions.includes(league.region) === false){
+            toast.warn('Region is wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.year < 2010 || league.year > 2023){
+            toast.warn('Year range is wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.year === 0){
+            toast.warn('Year is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.bestPlayer === ''){
+            toast.warn('Best Player is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.audience < 0){
+            toast.warn('Audience can not be a negative number!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(league.description === ''){
+            toast.warn('Description is required!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+
+        try{
+        await axios.put(serverLink + `/${id}`, league);
+        navigate("/" + toAddURL +  "leagues");
+        }
+        catch(err){
+            console.log(err.message);
+            toast.error('Error: ' + err.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "light",
+            });
+            return;
+        }
     };
 
     const loadLeague = async()=>{
