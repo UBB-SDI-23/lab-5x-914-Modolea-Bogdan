@@ -31,13 +31,13 @@ export default function User() {
 
     const loadUser = async()=>{
         const result = await axios.get(serverLink + `/${username}`);
-        setUser(result.data);
         const cntL = await axios.get(serverLink + `/${username}/leagues`);
         const cntT = await axios.get(serverLink + `/${username}/teams`);
         const cntF = await axios.get(serverLink + `/${username}/fans`);
-        counters.leagues = cntL;
-        counters.teams = cntT;
-        counters.fans = cntF;
+        counters.leagues = cntL.data;
+        counters.teams = cntT.data;
+        counters.fans = cntF.data;
+        setUser(result.data);
     }
 
   return (

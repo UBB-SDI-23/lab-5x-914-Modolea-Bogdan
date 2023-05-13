@@ -26,8 +26,6 @@ export default function NumberNationalities() {
     const loadRaportWithPage=async(page)=>{
         const result = await axios.get(`${serverLink}/numberNations/pagination/${page - 1}/${recordsPerPage}`);
         setRaport(result.data.content);
-
-        
     }
 
     const loadRaport=async()=>{

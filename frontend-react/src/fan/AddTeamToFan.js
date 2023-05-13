@@ -42,9 +42,63 @@ export default function AddTeamToFan() {
     const onSubmit=async(e)=>{
         e.preventDefault();
 
-        getTeam(teamName);
-        await axios.post(serverLink + `/${teamID}/fans`, fan);
-        navigate("/" + toAddURL +  "fans");
+        if(fan.fanSince < 2010 || fan.fanSince > 2023) {
+            toast.warn('Cannot have a fan of invalid ranges for teams!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.opinion === '') {
+            toast.warn('Opinion cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(teamName === '') {
+            toast.warn('Team name cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+
+        try{
+            getTeam(teamName);
+            await axios.post(serverLink + `/${teamID}/fans`, fan);
+            navigate("/" + toAddURL +  "fans");
+        }
+        catch(err) {
+            toast.warn('Something went wrong! Try again!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     };
 
   return (

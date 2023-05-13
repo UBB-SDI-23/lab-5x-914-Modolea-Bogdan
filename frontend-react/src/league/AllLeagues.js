@@ -26,9 +26,6 @@ export default function AllLeagues() {
     }, []);
 
     const loadLeaguesWithPage=async(page)=>{
-        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
-        setLeagues(result.data.content);
-
         if(page === 1){
             setNumbers1([0, 1, 2, 3].slice(1));
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
@@ -61,6 +58,9 @@ export default function AllLeagues() {
             setNumbers1([0, 1, 2, 3, '...', page - 2, page - 1, page, page + 1, page + 2].slice(1));
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }
+
+        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
+        setLeagues(result.data.content);
     }
 
     const loadLeagues=async()=>{

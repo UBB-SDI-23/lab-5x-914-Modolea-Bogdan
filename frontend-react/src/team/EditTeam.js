@@ -1,13 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function EditTeam() {
 
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/teams';
-    const serverLink = 'https://sdidemo.chickenkiller.com/teams';
+    const serverLink = 'http://localhost:8080/teams';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/teams';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/teams';
 
     let navigate = useNavigate();
@@ -34,9 +36,119 @@ export default function EditTeam() {
     }, []);
 
     const onSubmit=async(e)=>{
-      e.preventDefault();
-      await axios.put(serverLink + `/${id}`, team);
-      navigate("/" + toAddURL +  "teams");
+        e.preventDefault();
+
+        if(team.name === '') { 
+            toast.warn('Name cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.top === '') {
+            toast.warn('Toplaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.jungle === '') {
+            toast.warn('Jungler cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.mid === '') {
+            toast.warn('Midlaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.bot === '') {
+            toast.warn('Botlaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.support === '') {
+            toast.warn('Support cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+
+        if(!team.leagueID) {
+            toast.warn('League not found!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+
+        try{
+            await axios.put(serverLink + `/${id}`, team);
+            navigate("/" + toAddURL +  "teams");
+        }
+        catch(err){
+            console.log(err);
+            toast.error('Error editing team!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
     };
 
     const loadTeam = async()=>{
@@ -77,6 +189,7 @@ export default function EditTeam() {
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update Team</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "teams"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>
