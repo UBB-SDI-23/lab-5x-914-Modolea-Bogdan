@@ -42,12 +42,134 @@ export default function AddTeam() {
     const onSubmit=async(e)=>{
         e.preventDefault();
       
-        const result = await axios.get(`${serverLink}leagues/get-league-by-name/${league}`);
-        team.leagueID = result.data.lid;
-        console.log(team);
+        try{
+            const result = await axios.get(`${serverLink}leagues/get-league-by-name/${league}`);
+            team.leagueID = result.data.lid;
+            console.log(result.data);
+
+            if(result.data === ''){
+                toast.warn('League not found!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                return;
+            }
+        }
+        catch(err){
+            toast.warn('League not found!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+
+        // const teamName = await axios.get(`${serverLink}teams/getTeamByName/${team.name}`);
+        // if(teamName.data !== '') {
+        //     toast.warn('Team name already exists!', {
+        //         position: "top-right",
+        //         autoClose: 3000,
+        //         hideProgressBar: false,
+        //         closeOnClick: true,
+        //         pauseOnHover: true,
+        //         draggable: true,
+        //         progress: undefined,
+        //         theme: "light",
+        //         });
+        //     return;
+        // }
 
         if(team.name === '') { 
             toast.warn('Name cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.top === '') {
+            toast.warn('Toplaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.jungle === '') {
+            toast.warn('Jungler cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.mid === '') {
+            toast.warn('Midlaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.bot === '') {
+            toast.warn('Botlaner cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(team.support === '') {
+            toast.warn('Support cannot be left empty!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            return;
+        }
+        else if(league === '') {
+            toast.warn('League cannot be left empty!', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -75,17 +197,33 @@ export default function AddTeam() {
         }
 
 
-        const token = JSON.parse(localStorage.getItem('login')).store;
-        console.log(token);
-        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
-        console.log(currentUsername.data);
+        try{
 
-        team.username = currentUsername.data;
+            const token = JSON.parse(localStorage.getItem('login')).store;
+            console.log(token);
+            const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+            console.log(currentUsername.data);
 
-        console.log(team);
+            team.username = currentUsername.data;
 
-        await axios.post(serverLink + "teams", team);
-        navigate("/" + toAddURL +  "teams");
+            console.log(team);
+
+            await axios.post(serverLink + "teams", team);
+            navigate("/" + toAddURL +  "teams");
+        }
+        catch(err){
+            console.log(err);
+            toast.error('Something went wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
     };
 
   return (

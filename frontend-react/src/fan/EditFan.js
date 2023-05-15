@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function EditFan() {
 
@@ -32,8 +33,88 @@ export default function EditFan() {
 
     const onSubmit=async(e)=>{
       e.preventDefault();
-      await axios.put(serverLink + `/${id}`, fan);
-      navigate("/" + toAddURL +  "fans");
+
+      if(fan.name === '') { 
+        toast.warn('Name cannot be left empty!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+        return;
+        }
+        else if(fan.age === 0) {
+            toast.warn('Age cannot be 0!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.nationality === '') {
+            toast.warn('The fan has to have a nationality!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.occupation === '') {
+            toast.warn('The fan has to have an occupation!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.placeOfBirth === '') {
+            toast.warn('The fan has to be born somewhere!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        try{
+        await axios.put(serverLink + `/${id}`, fan);
+        navigate("/" + toAddURL +  "fans");
+        }
+        catch(err){
+            toast.error('Error updating fan!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     };
 
     const loadFan = async()=>{

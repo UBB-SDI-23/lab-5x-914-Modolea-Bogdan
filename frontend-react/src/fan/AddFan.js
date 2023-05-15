@@ -60,6 +60,32 @@ export default function AddFan() {
             });
             return;
         }
+        else if(fan.nationality === '') {
+            toast.warn('The fan has to have a nationality!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+        else if(fan.occupation === '') {
+            toast.warn('The fan has to have an occupation!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
         else if(fan.placeOfBirth === '') {
             toast.warn('The fan has to be born somewhere!', {
                 position: "top-right",
@@ -77,16 +103,31 @@ export default function AddFan() {
         const token = JSON.parse(localStorage.getItem('login')).store;
 
 
-        console.log(token);
-        const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
-        console.log(currentUsername.data);
+        try{
+            console.log(token);
+            const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+            console.log(currentUsername.data);
 
-        fan.username = currentUsername.data;
+            fan.username = currentUsername.data;
 
-        console.log(fan);
+            console.log(fan);
 
-        await axios.post(serverLink, fan);
-        navigate("/" + toAddURL +  "fans");
+            await axios.post(serverLink, fan);
+            navigate("/" + toAddURL +  "fans");
+        }
+        catch(err){
+            toast.warn('Something went wrong!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            console.log(err);
+        }
     };
 
   return (
