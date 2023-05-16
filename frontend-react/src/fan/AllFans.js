@@ -21,15 +21,16 @@ export default function AllFans() {
     const[npage, setNPages] = useState(0);
     const[numbers1, setNumbers1] = useState([0, 1, 2, 3].slice(1));
     const[numbers2, setNumbers2] = useState([]);
-    const recordsPerPage = 100;
+    const[recordsPerPage, setRecordsPerPage] = useState(100);
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
 
     useEffect(() => {
-        loadFans();
+        loadPages();
+        // loadFans();
     }, []);
 
-    const loadFansWithPage=async(page)=>{
+    const loadFansWithPage=async(page, recordsPage)=>{
         if(page === 1){
             setNumbers1([0, 1, 2, 3].slice(1));
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
@@ -63,9 +64,22 @@ export default function AllFans() {
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }
         
-        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPage}`);
         setFans(result.data.content);
+        setNPages(result.data.totalPages);
+        const lastpage = result.data.totalPages;
+        setNumbers2([lastpage - 3, lastpage - 2, lastpage - 1, lastpage].slice(1));
     }
+
+    const loadPages=async()=>{
+        const token = JSON.parse(localStorage.getItem('login')).store;
+        const svLink = 'http://localhost:8080';
+        const user = await axios.get(`${svLink}/user/getUsername/${token}`);
+        const pages = await axios.get(`${svLink}/user/${user.data}`);
+        setRecordsPerPage(pages.data.recordsOnPage);
+        // console.log(pages.data.recordsOnPage);
+        loadFansWithPage(currentPage, pages.data.recordsOnPage);
+    }   
 
     const loadFans=async()=>{
         const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
@@ -194,20 +208,20 @@ export default function AllFans() {
     console.log(currentPage);
     if(currentPage > 1){
         setCurrentPage(currentPage - 1);
-        loadFansWithPage(currentPage - 1);
+        loadFansWithPage(currentPage - 1, recordsPerPage);
     }
   }
 
   function changeCPage(id) { 
     setCurrentPage(id);
-    loadFansWithPage(id);
+    loadFansWithPage(id, recordsPerPage);
   }
 
   function nextPage() { 
     console.log(currentPage);
     if(currentPage < npage) {
         setCurrentPage(currentPage + 1);
-        loadFansWithPage(currentPage + 1);
+        loadFansWithPage(currentPage + 1, recordsPerPage);
     }
   }   
 }

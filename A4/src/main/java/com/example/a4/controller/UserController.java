@@ -2,13 +2,20 @@ package com.example.a4.controller;
 
 import com.example.a4.dto.AuthRequest;
 import com.example.a4.dto.DateAndCode;
+import com.example.a4.dto.LeaguesAndNoTeams;
+import com.example.a4.dto.RolePage;
 import com.example.a4.entity.user.UserInfo;
+import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.service.JwtService;
 import com.example.a4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +36,7 @@ public class UserController {
     public DateAndCode addUser(@RequestBody UserInfo userInfo){
         userInfo.setId(userService.getFirstFreeID());
         userInfo.setRoles("ROLE_USER");
+        userInfo.setRecordsOnPage(100);
         userInfo.setEnabled(false);
         return userService.addUser(userInfo);
     }
@@ -72,5 +80,28 @@ public class UserController {
     @GetMapping("/{username}/fans")
     public int getFanCounter(@PathVariable String username){
         return userService.getFanCounter(username);
+    }
+
+    @GetMapping("/{username}/role")
+    public String getUserRole(@PathVariable String username) {
+        return userService.getUserRole(username);
+    }
+
+    @GetMapping("/stats/pagination/{offset}/{pageSize}")
+    public ResponseEntity<Page<UserInfo>> findAllUsers(@PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
+        Page<UserInfo> allUsers = userService.findUsersWithPagination(offset, pageSize);
+        return ResponseEntity.ok(allUsers);
+    }
+
+    @PutMapping("/update/{username}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public UserInfo updateRoleAndPage(@PathVariable String username, @RequestBody RolePage rolePage, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        return userService.updateRolePage(username, rolePage, authorizationHeader);
+    }
+
+    @PutMapping("/update/{username}/pages/{noPages}")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public UserInfo updatePage(@PathVariable String username, @PathVariable int noPages) throws Exception {
+        return userService.updatePage(username, noPages);
     }
 }

@@ -22,6 +22,8 @@ import AddTeamToFan from './fan/AddTeamToFan';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import User from './user/User';
+import AllUsers from './user/AllUsers';
+import EditUser from './user/EditUser';
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
           <Route exact path={"/login"} element={<Login />}></Route>
           <Route exact path={"/register"} element={<Register />}></Route>
           <Route exact path={"/user/:username"} element={<User />}></Route>
+          <Route exact path={"/users"} element={<AllUsers />}></Route>
+          <Route exact path={"/editUser/:username"} element={<EditUser />}></Route>
         </Routes>
       </Router>
     </div>

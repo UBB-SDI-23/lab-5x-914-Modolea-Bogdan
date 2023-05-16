@@ -14,11 +14,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,28 +40,33 @@ public class TeamService {
     private UserInfoRepository userInfoRepository;
 
     public Team saveTeam(TeamRequest teamRequest) throws EntityNotFoundException {
-        League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
-        if (league == null)
-            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", teamRequest.getLeagueID()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Objects.equals(teamRequest.getUsername(), authentication.getName())) {
+            League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
+            if (league == null)
+                throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", teamRequest.getLeagueID()));
 
-        Page<Team> data = findTeamsWithPagination(0, 1);
-        int totalElems = (int) data.getTotalElements();
-        Team lastTeam = findTeamsWithPagination((totalElems - 1), 1).getContent().get(0);
+            Page<Team> data = findTeamsWithPagination(0, 1);
+            int totalElems = (int) data.getTotalElements();
+            Team lastTeam = findTeamsWithPagination((totalElems - 1), 1).getContent().get(0);
 
-        Optional<UserInfo> userInfo = userInfoRepository.findByName(teamRequest.getUsername());
+            Optional<UserInfo> userInfo = userInfoRepository.findByName(teamRequest.getUsername());
 
-        Team newTeam = new Team();
-        newTeam.setTid(lastTeam.getTid() + 1);
-        newTeam.setName(teamRequest.getName());
-        newTeam.setTop(teamRequest.getTop());
-        newTeam.setJungle(teamRequest.getJungle());
-        newTeam.setMid(teamRequest.getMid());
-        newTeam.setBot(teamRequest.getBot());
-        newTeam.setSupport(teamRequest.getSupport());
-        newTeam.setLeague(league);
-        newTeam.setUser(userInfo.get());
+            Team newTeam = new Team();
+            newTeam.setTid(lastTeam.getTid() + 1);
+            newTeam.setName(teamRequest.getName());
+            newTeam.setTop(teamRequest.getTop());
+            newTeam.setJungle(teamRequest.getJungle());
+            newTeam.setMid(teamRequest.getMid());
+            newTeam.setBot(teamRequest.getBot());
+            newTeam.setSupport(teamRequest.getSupport());
+            newTeam.setLeague(league);
+            newTeam.setUser(userInfo.get());
 
-        return teamRepository.save(newTeam);
+            return teamRepository.save(newTeam);
+        }
+        else
+            return null;
     }
 
     public List<TeamGetAll> getTeams() throws EntityNotFoundException {
@@ -145,33 +154,57 @@ public class TeamService {
         );
     }
 
-    public Team updateTeam(int id, TeamRequest teamRequest) throws EntityNotFoundException {
+    public Team updateTeam(int id, TeamRequest teamRequest, String authorizationHeader) throws Exception {
         Team existingTeam = teamRepository.findById(id).orElse(null);
         if (existingTeam == null)
             throw new EntityNotFoundException(String.format("Team with id %d doesn't exist!", id));
 
-        League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
-        if (league == null) {
-            throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", teamRequest.getLeagueID()));
+        String username = existingTeam.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+
+//        System.out.println(username);
+//        System.out.println(usernameToCompare);
+
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+
+        System.out.println(Objects.equals(user.getRoles(), "ROLE_ADMIN"));
+
+//        if(Objects.equals(usernameToCompare, username)){
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(user.getRoles(), "ROLE_USER")) || (Objects.equals(user.getRoles(), "ROLE_MODERATOR")) || (Objects.equals(user.getRoles(), "ROLE_ADMIN"))) {
+            League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
+            if (league == null) {
+                throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", teamRequest.getLeagueID()));
+            }
+
+            existingTeam.setName(teamRequest.getName());
+            existingTeam.setTop(teamRequest.getTop());
+            existingTeam.setJungle(teamRequest.getJungle());
+            existingTeam.setMid(teamRequest.getMid());
+            existingTeam.setBot(teamRequest.getBot());
+            existingTeam.setSupport(teamRequest.getSupport());
+            existingTeam.setLeague(league);
+
+            return teamRepository.save(existingTeam);
         }
-
-        existingTeam.setName(teamRequest.getName());
-        existingTeam.setTop(teamRequest.getTop());
-        existingTeam.setJungle(teamRequest.getJungle());
-        existingTeam.setMid(teamRequest.getMid());
-        existingTeam.setBot(teamRequest.getBot());
-        existingTeam.setSupport(teamRequest.getSupport());
-        existingTeam.setLeague(league);
-
-        return teamRepository.save(existingTeam);
+        throw new Exception("Not allowed");
     }
 
-    public void deleteTeam(int id) throws EntityNotFoundException {
+    public void deleteTeam(int id, String authorizationHeader) throws Exception {
         Team existingTeam = teamRepository.findById(id).orElse(null);
         if (existingTeam == null)
             throw new EntityNotFoundException(String.format("Team with id %d doesn't exist!", id));
 
-        teamRepository.delete(existingTeam);
+        String username = existingTeam.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+        String role = user.getRoles();
+
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN")))
+            teamRepository.delete(existingTeam);
+        else
+            throw new Exception("Not allowed");
     }
 
     public Team saveTeamFans(int id, FanAndTeam fan) throws EntityNotFoundException {
@@ -218,4 +251,8 @@ public class TeamService {
         existingFan.getSupporter().remove(existingFanOfTeam);
         fanRepository.save(existingFan);
     }
+
+//    public UserInfo getUserByToken(String token) {
+//        return userInfoRepository
+//    }
 }

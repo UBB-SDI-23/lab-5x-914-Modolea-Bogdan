@@ -1,12 +1,23 @@
 import React from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import axios from 'axios';
 
 export default function Home() {
+
+  let navigate = useNavigate();
 
   const logout = () => {
     localStorage.clear();
     alert('You logged out!');
     window.location.reload();
+  }
+
+  const myProfile = async() => {
+    const token = JSON.parse(localStorage.getItem('login')).store;
+    const svLink = 'http://localhost:8080';
+    const user = await axios.get(`${svLink}/user/getUsername/${token}`);
+    console.log(user.data);
+    navigate("/user/" + user.data);
   }
 
   return (
@@ -23,8 +34,10 @@ export default function Home() {
         </div>
 
          :
-      
-      <button onClick={logout} className='btn btn-primary my-2'>Logout</button>
+          <div>
+            <button onClick={myProfile} className='btn btn-primary my-2'>My profile</button> <br></br>
+            <button onClick={logout} className='btn btn-primary my-2'>Logout</button>
+          </div>
     } 
     </div>
   )

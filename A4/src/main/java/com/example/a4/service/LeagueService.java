@@ -12,6 +12,8 @@ import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -82,26 +84,44 @@ public class LeagueService {
         return league;
     }
 
-    public League updateLeague(int id, LeagueRequest leagueRequest) throws EntityNotFoundException{
+    public League updateLeague(int id, LeagueRequest leagueRequest, String authorizationHeader) throws Exception {
         League existingLeague = leagueRepository.findById(id).orElse(null);
         if(existingLeague == null)
             throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
 
-        existingLeague.setAbbreviation(leagueRequest.getAbbreviation());
-        existingLeague.setYear(leagueRequest.getYear());
-        existingLeague.setRegion(leagueRequest.getRegion());
-        existingLeague.setAudience(leagueRequest.getAudience());
-        existingLeague.setBestPlayer(leagueRequest.getBestPlayer());
+        String username = existingLeague.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+        String role = user.getRoles();
 
-        return leagueRepository.save(existingLeague);
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+            existingLeague.setAbbreviation(leagueRequest.getAbbreviation());
+            existingLeague.setYear(leagueRequest.getYear());
+            existingLeague.setRegion(leagueRequest.getRegion());
+            existingLeague.setAudience(leagueRequest.getAudience());
+            existingLeague.setBestPlayer(leagueRequest.getBestPlayer());
+            return leagueRepository.save(existingLeague);
+        }
+        throw new Exception("Not allowed to update league");
     }
 
-    public void deleteLeague(int id) throws EntityNotFoundException{
+    public void deleteLeague(int id, String authorizationHeader) throws Exception {
         League existingLeague = leagueRepository.findById(id).orElse(null);
         if(existingLeague == null)
             throw new EntityNotFoundException(String.format("League with id %d doesn't exist!", id));
 
-        leagueRepository.delete(existingLeague);
+        String username = existingLeague.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+        String role = user.getRoles();
+
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+            leagueRepository.delete(existingLeague);
+        }
+        else
+            throw new Exception("Not allowed to delete league!");
     }
 
     public Page<NationalitiesAndLeagues> getLeaguesByNations(int offset, int pageSize) throws EntityNotFoundException{

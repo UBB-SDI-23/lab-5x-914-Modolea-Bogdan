@@ -15,6 +15,8 @@ import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
@@ -91,26 +93,44 @@ public class FanService {
         );
     }
 
-    public Fan updateFan(int id, FanRequest fanRequest) throws EntityNotFoundException {
+    public Fan updateFan(int id, FanRequest fanRequest, String authorizationHeader) throws Exception {
         Fan existingFan = fanRepository.findById(id).orElse(null);
         if (existingFan == null)
             throw new EntityNotFoundException(String.format("No fan found with id %d", id));
 
-        existingFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
-        existingFan.setAge(fanRequest.getAge());
-        existingFan.setName(fanRequest.getName());
-        existingFan.setNationality(fanRequest.getNationality());
-        existingFan.setOccupation(fanRequest.getOccupation());
+        String username = existingFan.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+        String role = user.getRoles();
 
-        return fanRepository.save(existingFan);
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+            existingFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
+            existingFan.setAge(fanRequest.getAge());
+            existingFan.setName(fanRequest.getName());
+            existingFan.setNationality(fanRequest.getNationality());
+            existingFan.setOccupation(fanRequest.getOccupation());
+
+            return fanRepository.save(existingFan);
+        }
+        throw new Exception("Not allowed to update fan");
     }
 
-    public void deleteFan(int id) throws EntityNotFoundException {
+    public void deleteFan(int id, String authorizationHeader) throws Exception {
         Fan existingFan = fanRepository.findById(id).orElse(null);
         if (existingFan == null)
             throw new EntityNotFoundException(String.format("No fan found with id %d", id));
 
-        fanRepository.delete(existingFan);
+        String username = existingFan.getUser().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usernameToCompare = authentication.getName();
+        UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
+        String role = user.getRoles();
+        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+            fanRepository.delete(existingFan);
+        }
+        else
+            throw new Exception("Not allowed to delete fan");
     }
 
     public void deleteFanOfTeam(int fanID, int teamID) throws EntityNotFoundException {
