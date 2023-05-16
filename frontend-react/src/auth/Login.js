@@ -64,6 +64,7 @@ class Login extends React.Component {
             }))
             this.storeCollector();
             console.log(this.state);
+            window.location.reload();
         }
         catch (error) {
             toast.warn('Something went wrong! Try again!', {

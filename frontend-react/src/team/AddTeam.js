@@ -14,7 +14,7 @@ export default function AddTeam() {
     // const serverLink = 'https://sdidemo.chickenkiller.com/';
 
     let navigate = useNavigate();
-    console.log(localStorage.getItem('login'));
+    //console.log(localStorage.getItem('login'));
     
     const[league, setLeague] = useState('');
 
@@ -208,7 +208,11 @@ export default function AddTeam() {
 
             console.log(team);
 
-            await axios.post(serverLink + "teams", team);
+            await axios.post(serverLink + "teams", team, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             navigate("/" + toAddURL +  "teams");
         }
         catch(err){

@@ -15,7 +15,7 @@ export default function AllTeams() {
     const[npage, setNPages] = useState();
     const[numbers1, setNumbers1] = useState([0, 1, 2, 3].slice(1));
     const[numbers2, setNumbers2] = useState([]);
-    const recordsPerPage = 100;
+    const[recordsPerPage, setRecordsPerPage] = useState(100);
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
     // const records = teams.slice(firstIndex, lastIndex);
@@ -24,12 +24,16 @@ export default function AllTeams() {
 
     const {id} = useParams();
 
+    const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
     useEffect(() => {
-        loadTeams();
+        loadPages();
+        // loadTeams();
     }, []);
 
-    
-    const loadTeamsWithPage=async(page)=>{
+    const loadTeamsWithPage=async(page, recordsPage)=>{
         if(page === 1){
             setNumbers1([0, 1, 2, 3].slice(1));
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
@@ -63,12 +67,23 @@ export default function AllTeams() {
             setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }
 
-        const result = await axios.get(`${serverLink}/teams/stats/pagination/${page - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${serverLink}/teams/stats/pagination/${page - 1}/${recordsPage}`);
+        setNPages(result.data.totalPages);
         setTeams(result.data.content);
+        const lastpage = result.data.totalPages;
+        setNumbers2([lastpage - 3, lastpage - 2, lastpage - 1, lastpage].slice(1));
+    }
+
+    const loadPages=async()=>{
+        const token = JSON.parse(localStorage.getItem('login')).store;
+        const user = await axios.get(`${serverLink}/user/getUsername/${token}`);
+        const pages = await axios.get(`${serverLink}/user/${user.data}`);
+        setRecordsPerPage(pages.data.recordsOnPage);
+        // console.log(pages.data.recordsOnPage);
+        loadTeamsWithPage(currentPage, pages.data.recordsOnPage);
     }
 
     const loadTeams=async()=>{
-        console.log(serverLink);
         const result = await axios.get(`${serverLink}/teams/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setTeams(result.data.content);
@@ -77,8 +92,14 @@ export default function AllTeams() {
     }
   
     const deleteTeam = async(id)=>{
-        await axios.delete(serverLink + `/teams/${id}`);
-        loadTeams();
+        const token = JSON.parse(localStorage.getItem('login')).store;
+        await axios.delete(serverLink + `/teams/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        loadTeamsWithPage(currentPage, recordsPerPage);
+        // loadTeams();
     }
 
 
@@ -175,25 +196,25 @@ export default function AllTeams() {
 //   }
 
   function prePage(){
-    console.log(currentPage);
+    // console.log(currentPage);
     if(currentPage > 1){
         setCurrentPage(currentPage - 1);
-        loadTeamsWithPage(currentPage - 1);
+        loadTeamsWithPage(currentPage - 1, recordsPerPage);
     }
   }
 
   function changeCPage(id) { 
     if(id !== '...'){
         setCurrentPage(id);
-        loadTeamsWithPage(id);
+        loadTeamsWithPage(id, recordsPerPage);
     }
   }
 
   function nextPage() { 
-    console.log(currentPage);
+    // console.log(currentPage);
     if(currentPage < npage) {
         setCurrentPage(currentPage + 1);
-        loadTeamsWithPage(currentPage + 1);
+        loadTeamsWithPage(currentPage + 1, recordsPerPage);
     }
   }
 }

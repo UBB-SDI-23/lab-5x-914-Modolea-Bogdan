@@ -26,4 +26,5 @@ public class UserInfo {
 
     private String age;
     private String location;
+    private int recordsOnPage;
 }

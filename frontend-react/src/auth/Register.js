@@ -41,7 +41,7 @@ class Register extends React.Component {
 
     async register() {
         const data = axios.get(`http://localhost:8080/user/${this.state.name}`);
-        console.log(data);
+        console.log(data.name);
 
         if(this.state.name === '') {
             toast.warn('The name must not be left empty', {
@@ -56,7 +56,7 @@ class Register extends React.Component {
             });
             return;
         }
-        else if(data !== null) {
+        else if(data.name) {
             toast.warn('The name must be unique', {
                 position: "top-right",
                 autoClose: 3000,
@@ -121,7 +121,8 @@ class Register extends React.Component {
             });
             return;
         }
-        else if(!isNaN(Number(this.state.age))){
+        else if(isNaN(Number(this.state.age))){
+            console.log(isNaN(Number(this.state.age)));
             toast.warn('The age must be a number!', {
                 position: "top-right",
                 autoClose: 3000,

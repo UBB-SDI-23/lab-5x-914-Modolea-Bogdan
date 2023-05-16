@@ -30,4 +30,9 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
             "FROM Fan u " +
             "WHERE u.user.name = ?1")
     int getFanCounter(String username);
+
+    @Query("SELECT u.roles " +
+            "FROM UserInfo u " +
+            "WHERE u.name = ?1")
+    String getRoleByUsername(String username);
 }

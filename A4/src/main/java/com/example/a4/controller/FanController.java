@@ -69,13 +69,15 @@ public class FanController {
     }
 
     @PutMapping("/{fanID}")
-    public ResponseEntity<Fan> updateFan(@PathVariable int fanID, @RequestBody @Valid FanRequest fanRequest) throws EntityNotFoundException{
-        return ResponseEntity.ok(service.updateFan(fanID, fanRequest));
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<Fan> updateFan(@PathVariable int fanID, @RequestBody @Valid FanRequest fanRequest, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        return ResponseEntity.ok(service.updateFan(fanID, fanRequest, authorizationHeader));
     }
 
     @DeleteMapping("/{fanID}")
-    public ResponseEntity<Void> deleteFan(@PathVariable int fanID) throws EntityNotFoundException{
-        service.deleteFan(fanID);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<Void> deleteFan(@PathVariable int fanID, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        service.deleteFan(fanID, authorizationHeader);
         return ResponseEntity.noContent().build();
     }
 

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -56,13 +57,15 @@ public class LeagueController {
     }
 
     @PutMapping("/{leagueID}")
-    public ResponseEntity<League> updateLeague(@PathVariable int leagueID, @RequestBody @Valid LeagueRequest leagueRequest) throws EntityNotFoundException{
-        return ResponseEntity.ok(service.updateLeague(leagueID, leagueRequest));
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<League> updateLeague(@PathVariable int leagueID, @RequestBody @Valid LeagueRequest leagueRequest, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        return ResponseEntity.ok(service.updateLeague(leagueID, leagueRequest, authorizationHeader));
     }
 
     @DeleteMapping("/{leagueID}")
-    public ResponseEntity<Void> deleteLeague(@PathVariable int leagueID) throws EntityNotFoundException{
-        service.deleteLeague(leagueID);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<Void> deleteLeague(@PathVariable int leagueID, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        service.deleteLeague(leagueID, authorizationHeader);
         return ResponseEntity.noContent().build();
     }
 

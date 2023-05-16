@@ -5,15 +5,21 @@ import com.example.a4.entity.Fan;
 import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
+import com.example.a4.entity.user.UserInfo;
 import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.service.FanService;
 import com.example.a4.service.LeagueService;
 import com.example.a4.service.TeamService;
+import com.example.a4.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,9 +32,11 @@ import java.util.Objects;
 public class TeamController {
     @Autowired
     private TeamService service;
+    @Autowired
+    private UserService userService;
 
     @PostMapping
-    public ResponseEntity<Team> addTeam(@RequestBody @Valid TeamRequest teamRequest) throws EntityNotFoundException {
+    public ResponseEntity<Team> addTeam(@RequestBody @Valid TeamRequest teamRequest, @RequestHeader("Authorization") String authorizationHeader) throws EntityNotFoundException {
         return new ResponseEntity<>(service.saveTeam(teamRequest), HttpStatus.CREATED);
     }
 
@@ -66,13 +74,15 @@ public class TeamController {
     }
 
     @PutMapping("/{teamID}")
-    public ResponseEntity<Team> updateTeam(@PathVariable int teamID, @RequestBody @Valid TeamRequest teamRequest) throws EntityNotFoundException {
-        return ResponseEntity.ok(service.updateTeam(teamID, teamRequest));
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<Team> updateTeam(@PathVariable int teamID, @RequestBody @Valid TeamRequest teamRequest, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        return ResponseEntity.ok(service.updateTeam(teamID, teamRequest, authorizationHeader));
     }
 
     @DeleteMapping("/{teamID}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable int teamID) throws EntityNotFoundException {
-        service.deleteTeam(teamID);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
+    public ResponseEntity<Void> deleteTeam(@PathVariable int teamID, @RequestHeader("Authorization") String authorizationHeader) throws Exception {
+        service.deleteTeam(teamID, authorizationHeader);
         return ResponseEntity.noContent().build();
     }
 

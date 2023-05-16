@@ -1,14 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function EditTeam() {
 
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/leagues';
-    const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
+    const serverLink = 'http://localhost:8080/leagues';
+    // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
     // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     let navigate = useNavigate();
@@ -144,8 +144,15 @@ export default function EditTeam() {
         }
 
         try{
-        await axios.put(serverLink + `/${id}`, league);
-        navigate("/" + toAddURL +  "leagues");
+            const token = JSON.parse(localStorage.getItem('login')).store;
+
+
+            await axios.put(serverLink + `/${id}`, league, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            navigate("/" + toAddURL +  "leagues");
         }
         catch(err){
             console.log(err.message);
@@ -196,6 +203,7 @@ export default function EditTeam() {
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update League</button>
                     <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "leagues"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>

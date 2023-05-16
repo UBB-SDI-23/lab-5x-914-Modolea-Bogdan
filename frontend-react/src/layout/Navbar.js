@@ -1,11 +1,24 @@
-import React from 'react'
+import { getRoles } from '@testing-library/react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Navbar() {
   // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
   const toAddURL = '';
-  const serverLink = 'http://localhost:8080/';
+  const serverLink = 'http://localhost:8080/user';
     // const serverLink = '';
+
+  const [role, setRole] = useState('');
+
+  const getRoles = async() => {
+    const data = JSON.parse(localStorage.getItem('login'));
+    const username = await axios.get(serverLink + `/getUsername/${data.store}`);
+    const result = await axios.get(serverLink + `/${username.data}/role`);
+    setRole(result.data);
+  }
+
+  getRoles();
 
   return (
     <div>
@@ -19,6 +32,11 @@ export default function Navbar() {
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "teams"}>Teams</Link>
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "leagues"}>Leagues</Link>
                 <Link className='btn btn-outline-light' to={"/" + toAddURL + "fans"}>Fans</Link>
+
+                {  role === 'ROLE_ADMIN' ?
+                    <Link className='btn btn-outline-light' to={"/" + toAddURL + "users"}>Users</Link>
+                    : null
+                }
             </div>
         </nav>
     </div>
