@@ -68,13 +68,18 @@ export default function AllLeagues() {
     }
 
     const loadPages=async()=>{
-        const token = JSON.parse(localStorage.getItem('login')).store;
-        const svLink = 'http://localhost:8080';
-        const user = await axios.get(`${svLink}/user/getUsername/${token}`);
-        const pages = await axios.get(`${svLink}/user/${user.data}`);
-        setRecordsPerPage(pages.data.recordsOnPage);
-        // console.log(pages.data.recordsOnPage);
-        loadLeaguesWithPage(currentPage, pages.data.recordsOnPage);
+        const token = JSON.parse(localStorage.getItem('login'));
+        if(token !== null) {
+            const svLink = 'http://localhost:8080';
+            const user = await axios.get(`${svLink}/user/getUsername/${token.store}`);
+            const pages = await axios.get(`${svLink}/user/${user.data}`);
+            setRecordsPerPage(pages.data.recordsOnPage);
+            loadLeaguesWithPage(currentPage, pages.data.recordsOnPage);
+        }
+        else {
+            setRecordsPerPage(100);
+            loadLeaguesWithPage(currentPage, 100);
+        }
     }   
 
     const loadLeagues=async()=>{

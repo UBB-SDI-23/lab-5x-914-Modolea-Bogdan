@@ -14,6 +14,11 @@ export default function AllUsers() {
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
 
+    const[newPages, setNewPages] = useState(0);
+
+    const onInputChange=(e)=>{
+        setNewPages(e.target.value);
+    }
 
     useEffect(() => {
         loadUsers();
@@ -66,9 +71,46 @@ export default function AllUsers() {
         setNumbers2([lastpage - 3, lastpage - 2, lastpage - 1, lastpage].slice(1));
     }
 
+    const deleteAllData = async() => {
+        console.log("delted!");
+        const svLink = 'http://localhost:8080/admin';
+        const result = await axios.post(`${svLink}/admin/drop-all`);
+        console.log(result);
+        alert("Deleted!");
+    }
+
+    const populateAll = async() => {
+        console.log("populated!");
+        const svLink = 'http://localhost:8080/admin';
+        const resultL = await axios.post(`${svLink}/admin/populate-leagues`);
+        const resultT = await axios.post(`${svLink}/admin/populate-teams`);
+        const resultF = await axios.post(`${svLink}/admin/populate-fans`);
+        alert("Populated!");
+    }
+
+    const onSubmit=async(e)=>{
+        e.preventDefault();
+        console.log(newPages);
+        const svLink = 'http://localhost:8080/admin';
+        const result = await axios.post(`${svLink}/admin/updatePages/${newPages}`);
+        console.log(result);
+        window.location.reload();
+    }
+
     return (
         <div className='container'>
         <div className='py-4'>
+            <div className='mb-2'>
+                <button onClick={deleteAllData} className='btn btn-primary my-2'>Delete All Data</button> <br></br>
+                <button onClick={populateAll} className='btn btn-primary my-2'>Populate All Data</button> <br></br>
+                <form onSubmit={(e)=>onSubmit(e)}>
+                    <div className='mb-3'>
+                        <label htmlFor='newPages' className='form-label'>Number Of Pages</label>
+                        <input type={'number'} className='form-control' name='newPages' placeholder='Enter Number Of Pages' value={newPages} onChange={(e)=>onInputChange(e)}/>
+                    </div>
+                    <button type='submit' className='btn btn-outline-primary'>Update Pages for All Users</button>
+                </form>
+            </div>
             <table className="table border shadow">
                 <thead>
                     <tr>

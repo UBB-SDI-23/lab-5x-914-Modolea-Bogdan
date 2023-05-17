@@ -75,12 +75,18 @@ export default function AllTeams() {
     }
 
     const loadPages=async()=>{
-        const token = JSON.parse(localStorage.getItem('login')).store;
-        const user = await axios.get(`${serverLink}/user/getUsername/${token}`);
-        const pages = await axios.get(`${serverLink}/user/${user.data}`);
-        setRecordsPerPage(pages.data.recordsOnPage);
-        // console.log(pages.data.recordsOnPage);
-        loadTeamsWithPage(currentPage, pages.data.recordsOnPage);
+        const token = JSON.parse(localStorage.getItem('login'));
+        if(token !== null) {
+            const user = await axios.get(`${serverLink}/user/getUsername/${token.store}`);
+            const pages = await axios.get(`${serverLink}/user/${user.data}`);
+            console.log(pages);
+            setRecordsPerPage(pages.data.recordsOnPage);
+            loadTeamsWithPage(currentPage, pages.data.recordsOnPage);
+        }
+        else {
+            setRecordsPerPage(100);
+            loadTeamsWithPage(currentPage, 100);
+        }
     }
 
     const loadTeams=async()=>{

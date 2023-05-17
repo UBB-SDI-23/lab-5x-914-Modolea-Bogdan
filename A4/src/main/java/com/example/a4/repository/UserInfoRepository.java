@@ -35,4 +35,9 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
             "FROM UserInfo u " +
             "WHERE u.name = ?1")
     String getRoleByUsername(String username);
+
+    @Query("update UserInfo u " +
+            "set u.recordsOnPage = ?1 " +
+            "where u.id > 0")
+    void updateAllUsersPage(int noPages);
 }

@@ -7,6 +7,7 @@ import com.example.a4.entity.user.UserInfo;
 import com.example.a4.repository.UserInfoRepository;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -14,11 +15,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -28,6 +31,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private Environment env;
 
     public DateAndCode addUser(UserInfo userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
@@ -98,7 +104,7 @@ public class UserService {
         System.out.println(usernameAdmin);
         System.out.println(userInfo.getRoles());
 
-        if(Objects.equals(adminInfo.getRoles(), "ROLE_ADMIN"))
+        if (Objects.equals(adminInfo.getRoles(), "ROLE_ADMIN"))
             return userInfoRepository.save(userInfo);
         throw new Exception("Not allowed to edit user!");
     }
@@ -116,7 +122,30 @@ public class UserService {
         userInfo.setRecordsOnPage(noPages);
 
 //        if(Objects.equals(adminInfo.getRoles(), "ROLE_ADMIN") || Objects.equals(usernameAdmin, userInfo.getName()))
-            return userInfoRepository.save(userInfo);
+        return userInfoRepository.save(userInfo);
 //        throw new Exception("Not allowed to edit user!");
+    }
+
+    public void updateAllUsersPage(int noPages) throws SQLException {
+        try {
+            Connection conn = DriverManager.getConnection(
+                    env.getRequiredProperty("spring.datasource.url"),
+                    env.getRequiredProperty("spring.datasource.username"),
+                    env.getRequiredProperty("spring.datasource.password"));
+            List<String> statementsStrings = Arrays.asList(
+                    String.format("UPDATE esport2.user_info SET records_on_page = %d WHERE id > 0", noPages)
+            );
+            statementsStrings.forEach(statementString -> {
+                try {
+                    Statement statement = conn.createStatement();
+                    statement.execute(statementString);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

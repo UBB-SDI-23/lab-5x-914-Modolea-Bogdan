@@ -72,13 +72,19 @@ export default function AllFans() {
     }
 
     const loadPages=async()=>{
-        const token = JSON.parse(localStorage.getItem('login')).store;
-        const svLink = 'http://localhost:8080';
-        const user = await axios.get(`${svLink}/user/getUsername/${token}`);
-        const pages = await axios.get(`${svLink}/user/${user.data}`);
-        setRecordsPerPage(pages.data.recordsOnPage);
-        // console.log(pages.data.recordsOnPage);
-        loadFansWithPage(currentPage, pages.data.recordsOnPage);
+        const token = JSON.parse(localStorage.getItem('login'));
+        if(token !== null) {
+            const svLink = 'http://localhost:8080';
+            const user = await axios.get(`${svLink}/user/getUsername/${token.store}`);
+            const pages = await axios.get(`${svLink}/user/${user.data}`);
+            setRecordsPerPage(pages.data.recordsOnPage);
+            // console.log(pages.data.recordsOnPage);
+            loadFansWithPage(currentPage, pages.data.recordsOnPage);
+        }
+        else{
+            setRecordsPerPage(100);
+            loadFansWithPage(currentPage, 100);
+        }
     }   
 
     const loadFans=async()=>{
