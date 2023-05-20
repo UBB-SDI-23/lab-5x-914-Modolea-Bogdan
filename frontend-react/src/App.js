@@ -24,6 +24,7 @@ import Register from './auth/Register';
 import User from './user/User';
 import AllUsers from './user/AllUsers';
 import EditUser from './user/EditUser';
+import ChatRoom from './chat/ChatRoom';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route exact path={"/user/:username"} element={<User />}></Route>
           <Route exact path={"/users"} element={<AllUsers />}></Route>
           <Route exact path={"/editUser/:username"} element={<EditUser />}></Route>
+          <Route exact path={"/chat"} element={<ChatRoom />}></Route>
         </Routes>
       </Router>
     </div>
