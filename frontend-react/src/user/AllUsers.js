@@ -101,15 +101,21 @@ export default function AllUsers() {
         <div className='container'>
         <div className='py-4'>
             <div className='mb-2'>
-                <button onClick={deleteAllData} className='btn btn-primary my-2'>Delete All Data</button> <br></br>
-                <button onClick={populateAll} className='btn btn-primary my-2'>Populate All Data</button> <br></br>
-                <form onSubmit={(e)=>onSubmit(e)}>
-                    <div className='mb-3'>
-                        <label htmlFor='newPages' className='form-label'>Number Of Pages</label>
-                        <input type={'number'} className='form-control' name='newPages' placeholder='Enter Number Of Pages' value={newPages} onChange={(e)=>onInputChange(e)}/>
+                <div class="d-flex justify-content-center">
+                    <div class="input-group w-auto">
+                        <button onClick={deleteAllData} className='btn btn-danger my-2 me-1'>Delete All Data</button> <br></br>
+                        <button onClick={populateAll} className='btn btn-primary my-2 ms-1'>Populate All Data</button> <br></br>
                     </div>
-                    <button type='submit' className='btn btn-outline-primary'>Update Pages for All Users</button>
-                </form>
+                </div>
+                <label htmlFor='newPages' className='form-label'>Number Of Pages</label>
+                <div class="d-flex justify-content-center">
+                    <form onSubmit={(e)=>onSubmit(e)}>
+                        <div class="input-group w-auto">
+                            <input type={'number'} className='form-control' name='newPages' placeholder='Enter Number Of Pages' value={newPages} onChange={(e)=>onInputChange(e)}/>
+                            <button type='submit' className='btn btn-outline-primary'>Update Pages for All Users</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <table className="table border shadow">
                 <thead>

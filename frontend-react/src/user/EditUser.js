@@ -73,7 +73,7 @@ export default function EditUser() {
         <div className='container'>
         <div className='row'>
             <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
-                <h2 className='text-center m-4'>Edit Team</h2>
+                <h2 className='text-center m-4'>Edit User</h2>
 
                 <form onSubmit={(e)=>onSubmit(e)}>
                     <DropdownButton
