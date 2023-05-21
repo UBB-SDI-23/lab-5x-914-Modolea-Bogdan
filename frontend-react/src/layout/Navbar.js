@@ -37,6 +37,7 @@ export default function Navbar() {
                     <Link className='btn btn-outline-light' to={"/" + toAddURL + "users"}>Users</Link>
                     : null
                 }
+                <Link className='btn btn-outline-light' to={"/" + toAddURL + "chat"}>All Chat</Link>
             </div>
         </nav>
     </div>

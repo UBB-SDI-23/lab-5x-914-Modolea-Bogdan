@@ -172,7 +172,7 @@ const ChatRoom = () => {
                 margin="normal"
               />
               <button type="button" onClick={registerUser}>
-                    connect
+                    join chat
               </button> 
         </div>}
     </div>
