@@ -1,11 +1,10 @@
 package com.example.a4.controller;
 
-import com.example.a4.dto.AuthRequest;
-import com.example.a4.dto.DateAndCode;
-import com.example.a4.dto.LeaguesAndNoTeams;
-import com.example.a4.dto.RolePage;
+import com.example.a4.dto.*;
+import com.example.a4.entity.ChatHistory;
 import com.example.a4.entity.user.UserInfo;
 import com.example.a4.exception.EntityNotFoundException;
+import com.example.a4.service.ChatHistoryService;
 import com.example.a4.service.JwtService;
 import com.example.a4.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,8 @@ public class UserController {
     private JwtService jwtService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private ChatHistoryService chatHistoryService;
 
     @PostMapping("/register")
     public DateAndCode addUser(@RequestBody UserInfo userInfo){
@@ -103,5 +104,10 @@ public class UserController {
 //    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR', 'ROLE_USER')")
     public UserInfo updatePage(@PathVariable String username, @PathVariable int noPages) throws Exception {
         return userService.updatePage(username, noPages);
+    }
+
+    @PostMapping("/chat/postmessage")
+    public ChatHistory publishMessage(@RequestBody ChatHistoryRequest chatHistoryRequest) {
+        return chatHistoryService.saveChat(chatHistoryRequest);
     }
 }

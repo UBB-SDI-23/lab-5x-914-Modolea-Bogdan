@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {over} from 'stompjs';
 import SockJS from 'sockjs-client';
+import axios from 'axios';
 
 var stompClient =null;
 const ChatRoom = () => {
@@ -77,16 +78,20 @@ const ChatRoom = () => {
         const {value}=event.target;
         setUserData({...userData,"message": value});
     }
-    const sendValue=()=>{
+    const sendValue=async()=>{
             if (stompClient) {
-              var chatMessage = {
-                senderName: userData.username,
-                message: userData.message,
-                status:"MESSAGE"
-              };
-              console.log(chatMessage);
-              stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
-              setUserData({...userData,"message": ""});
+                var chatMessage = {
+                    senderName: userData.username,
+                    message: userData.message,
+                    status:"MESSAGE"
+                };
+                console.log(chatMessage.message);
+                console.log(chatMessage.senderName);
+
+                const result = await axios.post(`http://localhost:8080/user/chat/postmessage`, chatMessage);
+
+                stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
+                setUserData({...userData,"message": ""});
             }
     }
 
