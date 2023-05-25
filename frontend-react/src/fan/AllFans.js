@@ -7,7 +7,8 @@ export default function AllFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'http://localhost:8080/fans';
+    const serverLink = 'https://ed28-78-96-149-73.ngrok-free.app/fans'
     // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     console.log(localStorage.getItem('login'));
