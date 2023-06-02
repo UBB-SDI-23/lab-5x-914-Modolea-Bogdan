@@ -2,6 +2,7 @@ package com.example.a4.repository;
 
 import com.example.a4.dto.FanAndNoTeams;
 import com.example.a4.dto.FanGetAll;
+import com.example.a4.dto.FansAndCounter;
 import com.example.a4.dto.NumberNationalities;
 import com.example.a4.entity.Fan;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,11 @@ public interface FanRepository extends JpaRepository<Fan, Integer> {
             "GROUP BY f.nationality"
     )
     Page<NumberNationalities> findNumberNationalities(Pageable pageable);
+
+    @Query("SELECT new com.example.a4.dto.FansAndCounter(" +
+            "f.fanSince, COUNT(0)) " +
+            "FROM FanOfTeam f " +
+            "GROUP BY f.fanSince"
+    )
+    List<FansAndCounter> getFansAndCounter();
 }

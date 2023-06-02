@@ -40,12 +40,12 @@ public class FanController {
     }
 
     @PostMapping("/{fanID}/teams")
-    public ResponseEntity<Fan> addFanTeam(@PathVariable int fanID, @RequestBody FanOfTeam fanOfTeam) throws EntityNotFoundException{
+    public ResponseEntity<Fan> addFanTeam(@PathVariable int fanID, @RequestBody FanOfTeam fanOfTeam) throws EntityNotFoundException {
         return new ResponseEntity<>(service.addFanToTeam(fanID, fanOfTeam), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<FanGetAll>> findAllFans() throws EntityNotFoundException{
+    public ResponseEntity<List<FanGetAll>> findAllFans() throws EntityNotFoundException {
         return ResponseEntity.ok(service.getFans());
     }
 
@@ -88,12 +88,22 @@ public class FanController {
     }
 
     @GetMapping("/filter/{age}/pagination/{offset}/{pageSize}")
-    public ResponseEntity<Page<FanGetAll>> findByAgeGreaterThan(@PathVariable int age, @PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException{
+    public ResponseEntity<Page<FanGetAll>> findByAgeGreaterThan(@PathVariable int age, @PathVariable int offset, @PathVariable int pageSize) throws EntityNotFoundException {
         return ResponseEntity.ok(service.filterFansByAge(age, offset, pageSize));
     }
 
     @GetMapping("/numberNations/pagination/{offset}/{pageSize}")
     public ResponseEntity<Page<NumberNationalities>> findNumberNationalities(@PathVariable int offset, @PathVariable int pageSize) {
         return ResponseEntity.ok(service.findNumberNationalities(offset, pageSize));
+    }
+
+    @GetMapping("/get-fans-counter")
+    public ResponseEntity<List<FansAndCounter>> findFansWithCounter() {
+        return ResponseEntity.ok(service.findFansAndCounter());
+    }
+
+    @GetMapping("/predict-fans")
+    public ResponseEntity<List<Integer>> findPredictions() {
+        return ResponseEntity.ok(service.getFansAndCounter());
     }
 }

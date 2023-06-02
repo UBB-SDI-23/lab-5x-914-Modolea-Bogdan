@@ -104,7 +104,7 @@ public class FanService {
         UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
         String role = user.getRoles();
 
-        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+        if ((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
             existingFan.setPlaceOfBirth(fanRequest.getPlaceOfBirth());
             existingFan.setAge(fanRequest.getAge());
             existingFan.setName(fanRequest.getName());
@@ -126,10 +126,9 @@ public class FanService {
         String usernameToCompare = authentication.getName();
         UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
         String role = user.getRoles();
-        if((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
+        if ((Objects.equals(username, usernameToCompare) && Objects.equals(role, "ROLE_USER")) || (Objects.equals(role, "ROLE_MODERATOR")) || (Objects.equals(role, "ROLE_ADMIN"))) {
             fanRepository.delete(existingFan);
-        }
-        else
+        } else
             throw new Exception("Not allowed to delete fan");
     }
 
@@ -181,5 +180,78 @@ public class FanService {
 
         existingFan.getSupporter().add(fanOfTeam);
         return fanRepository.save(existingFan);
+    }
+
+    public List<FansAndCounter> findFansAndCounter() {
+        List<FansAndCounter> fansAndCounters = fanRepository.getFansAndCounter();
+        List<FansAndCounter> ans = new ArrayList<>();
+        int cnt = 0;
+        int fanCnt = 0;
+
+        double[] X = new double[101];
+
+        for (int i = 2010; i <= 2023; i++) {
+            if (fanCnt < fansAndCounters.size()) {
+                if (fansAndCounters.get(fanCnt).getYear() == i) {
+                    ans.add(fansAndCounters.get(fanCnt));
+                    fanCnt++;
+                } else {
+                    ans.add(new FansAndCounter(i, 0));
+                }
+            } else {
+                ans.add(new FansAndCounter(i, 0));
+            }
+            cnt++;
+        }
+
+        System.out.println(ans);
+
+        return ans;
+    }
+
+    public List<Integer> getFansAndCounter() {
+        List<FansAndCounter> fansAndCounters = fanRepository.getFansAndCounter();
+
+        double[] X = new double[101];
+        double[] y = new double[101];
+        int cnt = 0;
+        int fanCnt = 0;
+
+        for (int i = 2010; i <= 2023; i++) {
+            if (fanCnt < fansAndCounters.size()) {
+                if (fansAndCounters.get(fanCnt).getYear() == i) {
+                    X[cnt] = fansAndCounters.get(fanCnt).getYear();
+                    y[cnt] = fansAndCounters.get(fanCnt).getCounter();
+                    fanCnt++;
+                } else {
+                    X[cnt] = i;
+                    y[cnt] = 0;
+                }
+            } else {
+                X[cnt] = i;
+                y[cnt] = 0;
+            }
+            System.out.println(X[cnt] + " " + y[cnt] + "\n");
+            cnt++;
+        }
+
+        double[][] X_train = new double[X.length][1];
+        for (int i = 0; i < X.length; i++) {
+            X_train[i][0] = X[i];
+        }
+
+        org.apache.commons.math3.stat.regression.SimpleRegression lr = new org.apache.commons.math3.stat.regression.SimpleRegression();
+        lr.addObservations(X_train, y);
+
+        double predictedSalary1 = lr.predict(2024);
+        double predictedSalary2 = lr.predict(2025);
+        double predictedSalary3 = lr.predict(2026);
+
+        List<Integer> ans = new ArrayList<>();
+        ans.add((int) Math.round(predictedSalary1));
+        ans.add((int) Math.round(predictedSalary2));
+        ans.add((int) Math.round(predictedSalary3));
+
+        return ans;
     }
 }
