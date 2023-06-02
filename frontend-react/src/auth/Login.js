@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react';
 import axios from 'axios';
-import Home from '../pages/Home';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
 
 class Login extends React.Component {
     constructor() {
@@ -56,14 +55,12 @@ class Login extends React.Component {
             return;
         }
         try{
-            const result = await axios.post('http://localhost:8080/user/authenticate', this.state);
-            console.log(result.data);
+            const result = await axios.post(`${myConstClass.SERVER_LINK}/user/authenticate`, this.state);
             localStorage.setItem('login', JSON.stringify({
                 login: true,
                 store: result.data
             }))
             this.storeCollector();
-            console.log(this.state);
             window.location.reload();
         }
         catch (error) {

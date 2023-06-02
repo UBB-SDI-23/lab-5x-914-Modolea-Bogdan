@@ -3,17 +3,10 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
+
 
 export default function AddFan() {
-
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/fans';
-    const serverLinkUser = 'http://localhost:8080/user'
-    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
-
-    console.log(localStorage.getItem('login'));
-
     let navigate = useNavigate();
 
     const [fan, setFan] = useState({
@@ -104,16 +97,10 @@ export default function AddFan() {
 
 
         try{
-            console.log(token);
-            const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
-            console.log(currentUsername.data);
-
+            const currentUsername = await axios.get(`${myConstClass.SERVER_LINK}/user/getUsername/${token}`);
             fan.username = currentUsername.data;
-
-            console.log(fan);
-
-            await axios.post(serverLink, fan);
-            navigate("/" + toAddURL +  "fans");
+            await axios.post(`${myConstClass.SERVER_LINK}/fans`, fan);
+            navigate("/fans");
         }
         catch(err){
             toast.warn('Something went wrong!', {
@@ -126,7 +113,6 @@ export default function AddFan() {
                 progress: undefined,
                 theme: "light",
             });
-            console.log(err);
         }
     };
 
@@ -158,7 +144,7 @@ export default function AddFan() {
                         <input type={'text'} className='form-control' name='placeOfBirth' placeholder='Enter Place Of Birth' value={placeOfBirth} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Add Fan</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "fans"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/fans"}>Cancel</Link>
                     <ToastContainer />
                 </form>
             </div> 

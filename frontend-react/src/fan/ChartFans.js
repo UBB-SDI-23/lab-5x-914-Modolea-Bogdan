@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
 import axios from 'axios';
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
-
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -20,19 +17,16 @@ export default function ChartFans() {
 
     const loadPredictFans = async () => {
         const result = await axios.get(serverLink + `/predict-fans`);
-        // console.log(result.data);
-
         const newFans = await axios.get(serverLink + `/get-fans-counter`);
-        // console.log(newFans.data);
         setFans(newFans.data);
 
         console.log(result.data);
 
-        generateData(newFans.data, result.data);
+        generateData(newFans.data);
         generateFutureData(newFans.data, result.data);
     }
 
-    const generateData = (fans, result) => {
+    const generateData = (fans) => {
         const data = [];
         fans.map((fan) => { 
             data.push({x: fan.year, y: fan.counter});
@@ -42,9 +36,11 @@ export default function ChartFans() {
 
     const generateFutureData = (fans, result) => {
         const data = [];
+        let last = -1;
         fans.map((fan) => {
-            data.push({x: fan.year, y: fan.counter});
+            last = fan.counter;
         })
+        data.push({x: 2023, y: last});
         data.push({x: 2024, y: result[0]});
         data.push({x: 2025, y: result[1]});
         data.push({x: 2026, y: result[2]});
@@ -72,13 +68,10 @@ export default function ChartFans() {
         {
             type: "line",
             name: "Current Data",
-            xValueFormatString: "YYYY",
             showInLegend: true,
             dataPoints: currentData
         }]
-}
-
-    // console.log(currentData);
+    }
 
     return (
         <div>

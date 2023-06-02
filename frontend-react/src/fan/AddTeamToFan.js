@@ -1,17 +1,11 @@
-import { wait } from '@testing-library/user-event/dist/utils';
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
 
 export default function AddTeamToFan() {
-
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/teams';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/teams';
-
     let navigate = useNavigate();
 
     const [fan, setFan] = useState({
@@ -35,7 +29,7 @@ export default function AddTeamToFan() {
     }
 
     const getTeam = async(teamName) => {
-        const result = await axios.get(serverLink + `/getTeamByName/${teamName}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/teams/getTeamByName/${teamName}`);
         setTeamID(result.data.tid);
     }
 
@@ -84,8 +78,8 @@ export default function AddTeamToFan() {
 
         try{
             getTeam(teamName);
-            await axios.post(serverLink + `/${teamID}/fans`, fan);
-            navigate("/" + toAddURL +  "fans");
+            await axios.post(`${myConstClass.SERVER_LINK}/teams/${teamID}/fans`, fan);
+            navigate("/fans");
         }
         catch(err) {
             toast.warn('Something went wrong! Try again!', {
@@ -121,7 +115,7 @@ export default function AddTeamToFan() {
                         <input type={'text'} className='form-control' name='opinion' placeholder='Opinion About Team' value={opinion} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Add Fan</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "fans"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/fans"}>Cancel</Link>
                 </form>
             </div> 
         </div>
