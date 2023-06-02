@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {over} from 'stompjs';
 import SockJS from 'sockjs-client';
 import axios from 'axios';
+import * as myConstClass from '../constants/constants';
 
 var stompClient =null;
 const ChatRoom = () => {
@@ -13,13 +14,14 @@ const ChatRoom = () => {
         receivername: '',
         connected: false,
         message: ''
-      });
+    });
+
     useEffect(() => {
-      console.log(userData);
+        console.log(userData);
     }, [userData]);
 
     const connect =()=>{
-        let Sock = new SockJS('http://localhost:8080/ws');
+        let Sock = new SockJS(`${myConstClass.SERVER_LINK}/ws`);
         stompClient = over(Sock);
         stompClient.connect({},onConnected, onError);
     }
@@ -56,7 +58,6 @@ const ChatRoom = () => {
     }
     
     const onPrivateMessage = (payload)=>{
-        console.log(payload);
         var payloadData = JSON.parse(payload.body);
         if(privateChats.get(payloadData.senderName)){
             privateChats.get(payloadData.senderName).push(payloadData);
@@ -71,7 +72,6 @@ const ChatRoom = () => {
 
     const onError = (err) => {
         console.log(err);
-        
     }
 
     const handleMessage =(event)=>{
@@ -85,10 +85,8 @@ const ChatRoom = () => {
                     message: userData.message,
                     status:"MESSAGE"
                 };
-                console.log(chatMessage.message);
-                console.log(chatMessage.senderName);
 
-                const result = await axios.post(`http://localhost:8080/user/chat/postmessage`, chatMessage);
+                const result = await axios.post(`${myConstClass.SERVER_LINK}/user/chat/postmessage`, chatMessage);
 
                 stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
                 setUserData({...userData,"message": ""});

@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import axios from 'axios';
-import Home from '../pages/Home';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
 
 class Register extends React.Component {
     constructor() {
@@ -40,8 +39,7 @@ class Register extends React.Component {
     };
 
     async register() {
-        const data = axios.get(`http://localhost:8080/user/${this.state.name}`);
-        console.log(data.name);
+        const data = axios.get(`${myConstClass.SERVER_LINK}/user/${this.state.name}`);
 
         if(this.state.name === '') {
             toast.warn('The name must not be left empty', {
@@ -122,7 +120,6 @@ class Register extends React.Component {
             return;
         }
         else if(isNaN(Number(this.state.age))){
-            console.log(isNaN(Number(this.state.age)));
             toast.warn('The age must be a number!', {
                 position: "top-right",
                 autoClose: 3000,
@@ -150,8 +147,7 @@ class Register extends React.Component {
         }
 
         try{
-            const result = await axios.post('http://localhost:8080/user/register', this.state);
-            // console.log(result);
+            const result = await axios.post(`${myConstClass.SERVER_LINK}/user/register`, this.state);
             this.verifyCode = result.data.code;
             this.state.verificationCode = result.data.code;
             this.state.confirmationCodeSentAt = result.data.registerAt;
@@ -176,15 +172,13 @@ class Register extends React.Component {
             });
             return;
         }
-        //console.log(this.state);
     }
 
     async verify() {
         this.state = JSON.parse(localStorage.getItem('register')).state;
         console.log(this.state);
         console.log(this.state.verificationCode);
-        const result = await axios.put(`http://localhost:8080/user/register/verify/${this.state.verificationCode}`, this.state);
-        //console.log(result.data);
+        const result = await axios.put(`${myConstClass.SERVER_LINK}/user/register/verify/${this.state.verificationCode}`, this.state);
 
         localStorage.setItem('register', JSON.stringify({
             register: true
@@ -192,7 +186,6 @@ class Register extends React.Component {
 
         this.storeCollector();
         window.location.href = '/';
-        //console.log(this.state);
     }
 
     cancel() {
@@ -234,7 +227,6 @@ class Register extends React.Component {
                 <div>
                     <h1>You have 10 minutes to verify account!</h1>
                     <button className='btn btn-primary my-2' onClick={() => this.verify()}>Verify</button>
-                    {/* <button className='btn btn-outline-danger mx-2' onClick={() => this.cancel()}>Cancel</button> */}
                 </div>
             }
             </div>

@@ -24,21 +24,7 @@ export default function ViewFan() {
     }, []);
 
     const loadFan = async()=>{
-        const store = JSON.parse(localStorage.getItem('login'));
-        // console.log(store.store);
-        let token = store.store;
-        console.log(token);
-
-        // const config = {
-        //     headers: { Authorization: `Bearer ${token}` }
-        // };
-
-        // const result = await axios.get(serverLink + `/${id}`, {
-        //         // headers: {
-        //         //     Authorization: `Bearer ${token}`
-        //         // }
-        //     }
-        // );
+        console.log(id);
 
         const result = await axios.get(serverLink + `/${id}`);
         setFans(result.data);

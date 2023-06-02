@@ -1,13 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import * as myConstClass from '../constants/constants';
 
 export default function EditFan() {
-
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     let navigate = useNavigate();
 
@@ -100,8 +97,8 @@ export default function EditFan() {
             return;
         }
         try{
-        await axios.put(serverLink + `/${id}`, fan);
-        navigate("/" + toAddURL +  "fans");
+            await axios.put(`${myConstClass.SERVER_LINK}/fans/${id}`, fan);
+            navigate("/fans");
         }
         catch(err){
             toast.error('Error updating fan!', {
@@ -118,7 +115,7 @@ export default function EditFan() {
     };
 
     const loadFan = async()=>{
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/fans/${id}`);
         setFans(result.data);
     }
 
@@ -150,7 +147,8 @@ export default function EditFan() {
                         <input type={'text'} className='form-control' name='placeOfBirth' placeholder='Enter Place Of Birth' value={placeOfBirth} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update Fan</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "fans"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/fans"}>Cancel</Link>
+                    <ToastContainer />
                 </form>
             </div> 
         </div>

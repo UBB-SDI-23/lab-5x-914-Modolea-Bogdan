@@ -35,14 +35,14 @@ export default function User() {
     }, []);
 
     const loadUser = async()=>{
-        const token = JSON.parse(localStorage.getItem('login')).store;
-        const myUser = await axios.get(`${serverLink}/getUsername/${token}`);
-        const myRole = await axios.get(`${serverLink}/${myUser.data}/role`);
-        // console.log(myUser.data);
-        // console.log(myRole.data);
-
-        setCurrentUser(myUser.data);
-        setCurrentRole(myRole.data);
+        if(localStorage.getItem('login') !== null){
+            const token = JSON.parse(localStorage.getItem('login')).store;
+            const myUser = await axios.get(`${serverLink}/getUsername/${token}`);
+            const myRole = await axios.get(`${serverLink}/${myUser.data}/role`);
+            
+            setCurrentUser(myUser.data);
+            setCurrentRole(myRole.data);
+        }
 
         const result = await axios.get(serverLink + `/${username}`);
         const cntL = await axios.get(serverLink + `/${username}/leagues`);
