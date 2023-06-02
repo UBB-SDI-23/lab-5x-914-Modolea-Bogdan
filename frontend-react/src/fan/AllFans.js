@@ -1,14 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AllFans() {
   
     // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
     const toAddURL = '';
-    // const serverLink = 'http://localhost:8080/fans';
-    const serverLink = 'https://ed28-78-96-149-73.ngrok-free.app/fans'
+    const serverLink = 'http://localhost:8080/fans';
+    // const serverLink = 'https://ed28-78-96-149-73.ngrok-free.app/fans'
     // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
 
     console.log(localStorage.getItem('login'));
@@ -115,12 +116,31 @@ export default function AllFans() {
         // navigate("/" + toAddURL +  "filterFans/" + age);
       };
 
+    const displayPredict = async() => {
+        const result = await axios.get(`${serverLink}/predict-fans`);
+        console.log(result.data);
+        toast.info(`Predicted number of fans for next year: ${result.data}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+
+        navigate("/" + toAddURL +  "predictFans");
+    }
+
     return (
     <div className='container'>
         <div className='py-4'>
             <div className='py-2'>
                 <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "addFan"}>Add Fan</Link>
                 <Link className='btn btn-outline-primary mx-1' to={"/" + toAddURL + "nationalities"}>Number of Nationalities</Link>
+                <button className='btn btn-outline-primary mx-1' onClick={()=>displayPredict()}>Predict Number of Fans for next year</button>
+                <ToastContainer />
             </div>
             <div className='py-2'>
                 <form onSubmit={(e)=>onSubmit(e)}>
@@ -144,7 +164,10 @@ export default function AllFans() {
                         <th scope="col">Place Of Birth</th>
                         <th scope="col">Number of Teams</th>
                         <th scope="col">Added by</th>
+                        <th scope='col'></th>
                         <th scope="col">Action</th>
+                        <th scope='col'></th>
+                        <th scope='col'></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -162,8 +185,14 @@ export default function AllFans() {
                                 <td><Link to={`/user/${fan.username}`}>{fan.username}</Link></td>
                                 <td>
                                     <Link className='btn btn-primary mx-1' to={`/${toAddURL}viewFan/${fan.fid}`}>View</Link>
+                                </td>
+                                <td>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}updateFan/${fan.fid}`} >Edit</Link>
+                                </td>
+                                <td>
                                     <button className='btn btn-danger mx-1' onClick={()=>deleteFan(fan.fid)}>Delete</button>
+                                </td>
+                                <td>
                                     <Link className='btn btn-outline-primary mx-1' to={`/${toAddURL}addTeamToFan/${fan.fid}`} >Add Team</Link>
                                 </td>
                             </tr>
