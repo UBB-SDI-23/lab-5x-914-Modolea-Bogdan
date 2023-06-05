@@ -109,7 +109,7 @@ export default function User() {
                             </div>
                             <Link className='btn btn-primary my-2' to={"/"}>Back</Link><br></br>
                             {
-                                currentUser === user.name || currentRole === 'ADMIN' ?
+                                currentUser === user.name || currentRole === 'ROLE_ADMIN' ?
                                     <div>
                                         <div className='mb-3'>
                                             <label htmlFor='currentPages' className='form-label'>Current Pages</label>
