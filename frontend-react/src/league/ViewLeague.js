@@ -1,16 +1,11 @@
-import { wait } from '@testing-library/user-event/dist/utils';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, {useEffect, useState} from 'react';
+import { Link, useParams } from 'react-router-dom';
+import * as myConstClass from '../constants/constants';
 
 var teams = [];
 
 export default function ViewTeam() {
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/leagues';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     const [league, setLeague] = useState({
         abbreviation: '',
@@ -27,7 +22,7 @@ export default function ViewTeam() {
     }, []);
 
     const loadLeague = async()=>{
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/leagues/${id}`);
         setLeague(result.data);
         teams = result.data.teams;
     }
@@ -49,7 +44,7 @@ export default function ViewTeam() {
                         </ul>
                     </div>
                 </div>
-                <Link className='btn btn-primary my-2' to={"/" + toAddURL + "leagues"}>Back</Link>
+                <Link className='btn btn-primary my-2' to={"/leagues"}>Back</Link>
             </div>
         </div>
     </div>

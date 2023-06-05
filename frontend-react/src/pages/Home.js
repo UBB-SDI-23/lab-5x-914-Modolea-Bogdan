@@ -17,7 +17,6 @@ export default function Home() {
     const token = JSON.parse(localStorage.getItem('login')).store;
     const svLink = myConstClass.SERVER_LINK;
     const user = await axios.get(`${svLink}/user/getUsername/${token}`);
-    console.log(user.data);
     navigate("/user/" + user.data);
   }
 

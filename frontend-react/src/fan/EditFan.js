@@ -97,7 +97,13 @@ export default function EditFan() {
             return;
         }
         try{
-            await axios.put(`${myConstClass.SERVER_LINK}/fans/${id}`, fan);
+            const token = JSON.parse(localStorage.getItem('login')).store;
+
+            await axios.put(`${myConstClass.SERVER_LINK}/fans/${id}`, fan, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             navigate("/fans");
         }
         catch(err){

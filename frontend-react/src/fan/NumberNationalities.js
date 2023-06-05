@@ -76,7 +76,7 @@ export default function NumberNationalities() {
                                 </li>
                                 {
                                     numbers.map((n, i) => (
-                                        <li className={`page-item ${currentPage === n && n != '...' ? 'active' : ''}`} key={i}>
+                                        <li className={`page-item ${currentPage === n && n !== '...' ? 'active' : ''}`} key={i}>
                                             <a href='#' className='page-link'
                                             onClick={() => changeCPage(n)}>{n}</a>
                                         </li>

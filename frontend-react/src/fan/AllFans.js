@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as myConstClass from '../constants/constants';
 import Loading from '../constants/Loading';
+import { Tooltip } from 'react-tooltip';
 
 export default function AllFans() {
     let navigate = useNavigate();
@@ -90,7 +91,12 @@ export default function AllFans() {
   
     const deleteFan = async(id)=>{
         try{
-            await axios.delete(`${myConstClass.SERVER_LINK}/fans` + `/${id}`);
+            const token = JSON.parse(localStorage.getItem('login'));
+            await axios.delete(`${myConstClass.SERVER_LINK}/fans` + `/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             loadPages();
         }
         catch(err){
@@ -122,6 +128,8 @@ export default function AllFans() {
         navigate("/predictFans");
     }
 
+
+
     return (
         <div>
             {
@@ -129,16 +137,17 @@ export default function AllFans() {
                     <div className='container'>
                         <div className='py-4'>
                             <div className='py-2'>
-                                <Link className='btn btn-outline-secondary mx-1' to={"/nationalities"}>Number of Nationalities</Link>
+                                <Link className='btn btn-outline-secondary mx-1' to={"/nationalities"} data-tooltip-id="my-tooltip" data-tooltip-content="Get the number of fans by nationalities">Nationalities</Link>
                                 <Link className='btn btn-outline-primary mx-1' to={"/addFan"}>Add Fan</Link>
-                                <button className='btn btn-outline-secondary mx-1' onClick={()=>displayPredict()}>Predict Number of Fans for next year</button>
+                                <button className='btn btn-outline-secondary mx-1' onClick={()=>displayPredict()} data-tooltip-id="my-tooltip" data-tooltip-content="Predict the number of fans for next 3 years">Future Fans</button>
+                                <Tooltip id="my-tooltip" />
                             </div>
                             <div className='py-2'>
                                 <form onSubmit={(e)=>onSubmit(e)}>
                                     <div class="d-flex justify-content-center">
                                         <div class="input-group w-auto">
                                             <input type={'number'} className='form-control' name='age' placeholder='Enter Fan Age' value={age} onChange={(e)=>onInputChange(e)}/>
-                                            <Link type='submit' className='btn btn-primary mx-1' to={`/filterFans/${age}`}>Filter Fans</Link>
+                                            <Link type='submit' className='btn btn-primary mx-1' to={`/filterFans/${age}`}>Filter Fans by Age</Link>
                                         </div>
                                     </div>
                                 </form>

@@ -1,13 +1,9 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react'
 import { Link, useParams } from 'react-router-dom'
+import * as myConstClass from '../constants/constants';
 
 export default function ViewTeam() {
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/teams';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/teams';
-    // const serverLink = 'https://leaguemanagersdi-env.eba-pnmmng2r.eu-north-1.elasticbeanstalk.com/teams';
 
     const [team, setTeam] = useState({
         name: '',
@@ -26,7 +22,7 @@ export default function ViewTeam() {
     }, []);
 
     const loadTeam = async()=>{
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/teams/${id}`);
         setTeam(result.data);
     }
 
@@ -48,7 +44,7 @@ export default function ViewTeam() {
                         </ul>
                     </div>
                 </div>
-                <Link className='btn btn-primary my-2' to={"/" + toAddURL + "teams"}>Back</Link>
+                <Link className='btn btn-primary my-2' to={"/teams"}>Back</Link>
             </div>
         </div>
     </div>

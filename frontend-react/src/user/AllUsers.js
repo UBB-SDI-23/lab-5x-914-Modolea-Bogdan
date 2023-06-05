@@ -1,18 +1,19 @@
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import * as myConstClass from '../constants/constants';
+import Loading from '../constants/Loading';
 
 export default function AllUsers() {
-    const serverLink = 'http://localhost:8080/user';
 
     const[users, setUsers] = useState([]);
+    const[loading, setLoading] = useState(true);
+
     const[currentPage, setCurrentPage] = useState(1);
     const[npage, setNPages] = useState();
     const[numbers1, setNumbers1] = useState([0, 1, 2, 3].slice(1));
     const[numbers2, setNumbers2] = useState([]);
     const recordsPerPage = 100;
-    const lastIndex = currentPage * recordsPerPage;
-    const firstIndex = lastIndex - recordsPerPage;
 
     const[newPages, setNewPages] = useState(0);
 
@@ -27,44 +28,55 @@ export default function AllUsers() {
     const loadUsersWithPage=async(page)=>{
         if(page === 1){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }else if(page === 2){
             setNumbers1([0, 1, 2, 3, 4].slice(1));
-            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }else if(page === 3){
             setNumbers1([0, 1, 2, 3, 4, 5].slice(1));
-            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }else if(page === 4){
             setNumbers1([0, 1, 2, 3, 4, 5, 6].slice(1));
-            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }else if(page === npage){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 2, npage - 1, npage].slice(1));
         }else if(page === npage - 1){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([page - 3, page - 2, page - 1, page, page + 1].slice(1));
+            if(npage !== 0)
+                setNumbers2([page - 3, page - 2, page - 1, page, page + 1].slice(1));
         }else if(page === npage - 2){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+            if(npage !== 0)
+                setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
         }else if(page === npage - 3){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
+            if(npage !== 0)
+                setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2].slice(1));
         }else if(page == npage - 4){
             setNumbers1([0, 1, 2, 3].slice(1));
-            setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4].slice(1));
+            if(npage !== 0)
+                setNumbers2([page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4].slice(1));
         }
         else{
             setNumbers1([0, 1, 2, 3, '...', page - 2, page - 1, page, page + 1, page + 2].slice(1));
-            setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
+            if(npage !== 0)
+                setNumbers2([npage - 3, npage - 2, npage - 1, npage].slice(1));
         }
 
-        const result = await axios.get(`${serverLink}/stats/pagination/${page - 1}/${recordsPerPage}`);
+        setLoading(true);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/user/stats/pagination/${page - 1}/${recordsPerPage}`);
         setUsers(result.data.content);
+        setLoading(false);
     }
 
     const loadUsers=async()=>{
-        console.log(serverLink);
-        const result = await axios.get(`${serverLink}/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/user/stats/pagination/${currentPage - 1}/${recordsPerPage}`);
         setNPages(result.data.totalPages);
         setUsers(result.data.content);
         const lastpage = result.data.totalPages;
@@ -72,28 +84,21 @@ export default function AllUsers() {
     }
 
     const deleteAllData = async() => {
-        console.log("delted!");
-        const svLink = 'http://localhost:8080/admin';
-        const result = await axios.post(`${svLink}/admin/drop-all`);
-        console.log(result);
+        const result = await axios.post(`${myConstClass.SERVER_LINK}/admin/admin/drop-all`);
         alert("Deleted!");
     }
 
     const populateAll = async() => {
-        console.log("populated!");
-        const svLink = 'http://localhost:8080/admin';
-        const resultL = await axios.post(`${svLink}/admin/populate-leagues`);
-        const resultT = await axios.post(`${svLink}/admin/populate-teams`);
-        const resultF = await axios.post(`${svLink}/admin/populate-fans`);
+        const resultL = await axios.post(`${myConstClass.SERVER_LINK}/admin/admin/populate-leagues`);
+        const resultT = await axios.post(`${myConstClass.SERVER_LINK}/admin/admin/populate-teams`);
+        const resultF = await axios.post(`${myConstClass.SERVER_LINK}/admin/admin/populate-fans`);
         alert("Populated!");
     }
 
     const onSubmit=async(e)=>{
         e.preventDefault();
         console.log(newPages);
-        const svLink = 'http://localhost:8080/admin';
-        const result = await axios.post(`${svLink}/admin/updatePages/${newPages}`);
-        console.log(result);
+        const result = await axios.post(`${myConstClass.SERVER_LINK}/admin/admin/updatePages/${newPages}`);
         window.location.reload();
     }
 
@@ -136,7 +141,7 @@ export default function AllUsers() {
                                 <td>{user.name}</td>
                                 <td>{user.roles}</td>
                                 <td>{user.recordsOnPage}</td>
-                                <td><Link to={`/editUser/${user.name}`}>Edit</Link></td>
+                                <td><Link className='btn btn-outline-secondary mx-1' to={`/editUser/${user.name}`}>Edit</Link></td>
                             </tr>
                         ))
                     }

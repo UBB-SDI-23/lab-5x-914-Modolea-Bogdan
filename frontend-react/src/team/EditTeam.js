@@ -3,14 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
 
 export default function EditTeam() {
-
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/teams';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/teams';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/teams';
 
     let navigate = useNavigate();
 
@@ -119,12 +114,12 @@ export default function EditTeam() {
 
         try{
             const token = JSON.parse(localStorage.getItem('login')).store;
-            await axios.put(serverLink + `/${id}`, team, {
+            await axios.put(`${myConstClass.SERVER_LINK}/teams/${id}`, team, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            navigate("/" + toAddURL +  "teams");
+            navigate("/teams");
         }
         catch(err){
             console.log(err);
@@ -143,7 +138,7 @@ export default function EditTeam() {
     };
 
     const loadTeam = async()=>{
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/teams/${id}`);
         setTeam(result.data);
     }
 
@@ -179,7 +174,7 @@ export default function EditTeam() {
                         <input type={'text'} className='form-control' name='support' placeholder='Enter Support Name' value={support} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update Team</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "teams"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/teams"}>Cancel</Link>
                     <ToastContainer />
                 </form>
             </div> 

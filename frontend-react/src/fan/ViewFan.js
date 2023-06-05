@@ -1,14 +1,9 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, {useEffect, useState} from 'react';
+import { Link, useParams } from 'react-router-dom';
+import * as myConstClass from '../constants/constants';
 
 export default function ViewFan() {
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/fans';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/fans';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/fans';
-
     const [fan, setFans] = useState({
         name: '',
         age: 0,
@@ -26,7 +21,7 @@ export default function ViewFan() {
     const loadFan = async()=>{
         console.log(id);
 
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/fans/${id}`);
         setFans(result.data);
     }
 
@@ -46,7 +41,7 @@ export default function ViewFan() {
                         </ul>
                     </div>
                 </div>
-                <Link className='btn btn-primary my-2' to={"/" + toAddURL + "fans"}>Back</Link>
+                <Link className='btn btn-primary my-2' to={"/fans"}>Back</Link>
             </div>
         </div>
     </div>

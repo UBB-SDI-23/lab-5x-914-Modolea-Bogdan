@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
 import axios from 'axios';
+import * as myConstClass from '../constants/constants';
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 export default function ChartFans() {
-    const serverLink = 'http://localhost:8080/fans';
+    const serverLink = myConstClass.SERVER_LINK + `/fans`;
 
     const[fans, setFans] = useState([]);
     const[currentData, setData] = useState([]);

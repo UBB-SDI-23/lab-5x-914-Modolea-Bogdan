@@ -2,14 +2,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import * as myConstClass from '../constants/constants';
 
 export default function EditTeam() {
-
-    // const toAddURL = 'lab-5x-914-Modolea-Bogdan/';
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/leagues';
-    // const serverLink = 'https://sdidemo.chickenkiller.com/leagues';
-    // const serverLink = 'http://esportsleaguemanager-env.eba-tbki6djt.eu-north-1.elasticbeanstalk.com/leagues';
 
     let navigate = useNavigate();
 
@@ -147,16 +142,15 @@ export default function EditTeam() {
             const token = JSON.parse(localStorage.getItem('login')).store;
 
 
-            await axios.put(serverLink + `/${id}`, league, {
+            await axios.put(`${myConstClass.SERVER_LINK}/leagues/${id}`, league, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            navigate("/" + toAddURL +  "leagues");
+            navigate("/leagues");
         }
         catch(err){
-            console.log(err.message);
-            toast.error('Error: ' + err.message, {
+            toast.error(`You can't do that!`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -170,7 +164,7 @@ export default function EditTeam() {
     };
 
     const loadLeague = async()=>{
-        const result = await axios.get(serverLink + `/${id}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/leagues/${id}`);
         setLeague(result.data);
     }
 
@@ -202,7 +196,7 @@ export default function EditTeam() {
                         <input type={'number'} className='form-control' name='audience' placeholder='Enter Audience' value={audience} onChange={(e)=>onInputChange(e)}/>
                     </div>
                     <button type='submit' className='btn btn-outline-primary'>Update League</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "leagues"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/leagues"}>Cancel</Link>
                     <ToastContainer />
                 </form>
             </div> 

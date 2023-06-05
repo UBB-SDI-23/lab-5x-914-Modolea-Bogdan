@@ -4,10 +4,10 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown'
+import Dropdown from 'react-bootstrap/Dropdown';
+import * as myConstClass from '../constants/constants';
 
 export default function EditUser() {
-    const serverLink = 'http://localhost:8080/user';
 
     let navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export default function EditUser() {
     }, []);
 
     const loadUser = async()=>{
-        const result = await axios.get(serverLink + `/${username}`);
+        const result = await axios.get(`${myConstClass.SERVER_LINK}/user/${username}`);
 
         const newDict = {};
         newDict['ROLE_ADMIN'] = 'ADMIN';
@@ -51,7 +51,7 @@ export default function EditUser() {
         console.log(rolepage);
 
         const token = JSON.parse(localStorage.getItem('login')).store;
-        await axios.put(serverLink + `/update/${username}`, rolepage, {
+        await axios.put(`${myConstClass.SERVER_LINK}/user/update/${username}`, rolepage, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

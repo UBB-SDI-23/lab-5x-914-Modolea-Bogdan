@@ -1,20 +1,13 @@
 import axios from 'axios';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as myConstClass from '../constants/constants';
 
 export default function AddTeam() {
 
-    const toAddURL = '';
-    const serverLink = 'http://localhost:8080/';
-    const serverLinkUser = 'http://localhost:8080/user'
-    // const serverLink = 'https://sdidemo.chickenkiller.com/';
-
     let navigate = useNavigate();
-    //console.log(localStorage.getItem('login'));
     
     const[league, setLeague] = useState('');
 
@@ -43,7 +36,7 @@ export default function AddTeam() {
         e.preventDefault();
       
         try{
-            const result = await axios.get(`${serverLink}leagues/get-league-by-name/${league}`);
+            const result = await axios.get(`${myConstClass.SERVER_LINK}/leagues/get-league-by-name/${league}`);
             team.leagueID = result.data.lid;
             console.log(result.data);
 
@@ -74,21 +67,6 @@ export default function AddTeam() {
             });
             return;
         }
-
-        // const teamName = await axios.get(`${serverLink}teams/getTeamByName/${team.name}`);
-        // if(teamName.data !== '') {
-        //     toast.warn('Team name already exists!', {
-        //         position: "top-right",
-        //         autoClose: 3000,
-        //         hideProgressBar: false,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //         theme: "light",
-        //         });
-        //     return;
-        // }
 
         if(team.name === '') { 
             toast.warn('Name cannot be left empty!', {
@@ -198,25 +176,23 @@ export default function AddTeam() {
 
 
         try{
-
             const token = JSON.parse(localStorage.getItem('login')).store;
             console.log(token);
-            const currentUsername = await axios.get(serverLinkUser +`/getUsername/${token}`);
+            const currentUsername = await axios.get(`${myConstClass.SERVER_LINK}/user/getUsername/${token}`);
             console.log(currentUsername.data);
 
             team.username = currentUsername.data;
 
             console.log(team);
 
-            await axios.post(serverLink + "teams", team, {
+            await axios.post(`${myConstClass.SERVER_LINK}/teams`, team, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            navigate("/" + toAddURL +  "teams");
+            navigate("/teams");
         }
         catch(err){
-            console.log(err);
             toast.error('Something went wrong!', {
                 position: "top-right",
                 autoClose: 3000,
@@ -267,7 +243,7 @@ export default function AddTeam() {
                     </div>
 
                     <button type='submit' className='btn btn-outline-primary'>Add Team</button>
-                    <Link className='btn btn-outline-danger mx-2' to={"/" + toAddURL + "teams"}>Cancel</Link>
+                    <Link className='btn btn-outline-danger mx-2' to={"/teams"}>Cancel</Link>
                     <ToastContainer />
                 </form>
             </div> 
