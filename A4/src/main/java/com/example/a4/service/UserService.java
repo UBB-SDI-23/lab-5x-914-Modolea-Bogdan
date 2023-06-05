@@ -28,10 +28,8 @@ import java.util.*;
 public class UserService {
     @Autowired
     private UserInfoRepository userInfoRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private Environment env;
 
@@ -39,10 +37,8 @@ public class UserService {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
 
         String randomCode = RandomString.make(16);
-//        System.out.println(randomCode);
         userInfo.setVerificationCode(randomCode);
         userInfo.setConfirmationCodeSentAt(LocalDateTime.now());
-        System.out.println(userInfo.getConfirmationCodeSentAt());
 
         userInfoRepository.save(userInfo);
         return new DateAndCode(userInfo.getVerificationCode(), userInfo.getConfirmationCodeSentAt());
@@ -87,8 +83,7 @@ public class UserService {
     }
 
     public Page<UserInfo> findUsersWithPagination(int offset, int pageSize) {
-        Page<UserInfo> users = userInfoRepository.findAll(PageRequest.of(offset, pageSize));
-        return users;
+        return userInfoRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
     public UserInfo updateRolePage(String username, RolePage rolePage, String authorizationHeader) throws Exception {
@@ -111,19 +106,11 @@ public class UserService {
 
     public UserInfo updatePage(String username, int noPages) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String usernameAdmin = authentication.getName();
-//        UserInfo adminInfo = userInfoRepository.findByName(usernameAdmin).get();
-
-//        System.out.println("\n\n\n");
-//        System.out.println(adminInfo.getName());
-//        System.out.println("\n\n\n");
 
         UserInfo userInfo = userInfoRepository.findByName(username).get();
         userInfo.setRecordsOnPage(noPages);
 
-//        if(Objects.equals(adminInfo.getRoles(), "ROLE_ADMIN") || Objects.equals(usernameAdmin, userInfo.getName()))
         return userInfoRepository.save(userInfo);
-//        throw new Exception("Not allowed to edit user!");
     }
 
     public void updateAllUsersPage(int noPages) throws SQLException {

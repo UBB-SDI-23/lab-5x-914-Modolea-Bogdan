@@ -19,7 +19,7 @@ public class AdminService {
     @Autowired
     private Environment env;
 
-    public void dropAll() throws SQLException {
+    public void dropAll() {
         try {
             Connection conn = DriverManager.getConnection(
                     env.getRequiredProperty("spring.datasource.url"),

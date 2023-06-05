@@ -13,14 +13,4 @@ public class A4Application {
 		SpringApplication.run(A4Application.class, args);
 	}
 
-//	@Bean
-//	public WebMvcConfigurer corsConfigurer() {
-//		return new WebMvcConfigurer() {
-//			@Override
-//			public void addCorsMappings(CorsRegistry registry) {
-//				registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:3000");
-//			}
-//		};
-//	}
-
 }

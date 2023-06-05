@@ -1,8 +1,6 @@
 package com.example.a4.service;
 
 import com.example.a4.dto.*;
-import com.example.a4.entity.Fan;
-import com.example.a4.entity.FanOfTeam;
 import com.example.a4.entity.League;
 import com.example.a4.entity.Team;
 import com.example.a4.entity.user.UserInfo;
@@ -23,10 +21,6 @@ public class LeagueService {
     @Autowired
     private LeagueRepository leagueRepository;
     @Autowired
-    private FanOfTeamRepository fanOfTeamRepository;
-    @Autowired
-    private FanRepository fanRepository;
-    @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private UserInfoRepository userInfoRepository;
@@ -41,10 +35,7 @@ public class LeagueService {
         newLeague.setLid(lastLeague.getLid() + 1);
 
         Optional<UserInfo> userInfo = userInfoRepository.findByName(leagueRequest.getUsername());
-        System.out.println(userInfo.get());
-        System.out.println(leagueRequest.getUsername());
 
-        //ObjectMapper.map(leagueRequest, newLeague);
         newLeague.setLid(lastLeague.getLid() + 1);
         newLeague.setYear(leagueRequest.getYear());
         newLeague.setAbbreviation(leagueRequest.getAbbreviation());
@@ -54,7 +45,6 @@ public class LeagueService {
         newLeague.setDescription(leagueRequest.getDescription());
         newLeague.setUser(userInfo.get());
 
-        System.out.println(newLeague);
         return leagueRepository.save(newLeague);
     }
 
@@ -67,13 +57,11 @@ public class LeagueService {
     }
 
     public Page<League> findLeaguesWithPagination(int offset, int pageSize) throws EntityNotFoundException {
-        Page<League> leagues = leagueRepository.findAll(PageRequest.of(offset, pageSize));
-        return leagues;
+        return leagueRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
     public Page<LeaguesAndNoTeams> findLeaguesAndNoTeams(int offset, int pageSize) {
-        Page<LeaguesAndNoTeams> leaguesAndNoTeams = leagueRepository.getLeaguesAndNoTeams(PageRequest.of(offset, pageSize));
-        return leaguesAndNoTeams;
+        return leagueRepository.getLeaguesAndNoTeams(PageRequest.of(offset, pageSize));
     }
 
     public League getLeagueById(int id) throws EntityNotFoundException{

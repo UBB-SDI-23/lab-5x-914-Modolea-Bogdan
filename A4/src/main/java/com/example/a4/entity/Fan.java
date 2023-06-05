@@ -21,7 +21,6 @@ import java.util.List;
 @Table(name = "FAN_TBL")
 public class Fan {
     @Id
-//    @GeneratedValue
     private int fid;
 
     @NotBlank(message = "Please insert a name")

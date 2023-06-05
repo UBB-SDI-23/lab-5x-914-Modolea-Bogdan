@@ -20,7 +20,6 @@ import java.util.Set;
 @Table(name = "LEAGUE_TBL")
 public class League {
     @Id
-//    @GeneratedValue
     private int lid;
     private String abbreviation;
     private String region;

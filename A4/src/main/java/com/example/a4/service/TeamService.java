@@ -10,21 +10,17 @@ import com.example.a4.exception.EntityNotFoundException;
 import com.example.a4.repository.*;
 import com.example.a4.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -102,9 +98,8 @@ public class TeamService {
         return team;
     }
 
-    public Page<Team> findTeamsWithPagination(int offset, int pageSize) throws EntityNotFoundException {
-        Page<Team> teams = teamRepository.findAll(PageRequest.of(offset, pageSize));
-        return teams;
+    public Page<Team> findTeamsWithPagination(int offset, int pageSize) {
+        return teamRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
     public Page<TeamAndNoFans> findTeamsWithNoFans(int offset, int pageSize) {
@@ -163,14 +158,8 @@ public class TeamService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameToCompare = authentication.getName();
 
-//        System.out.println(username);
-//        System.out.println(usernameToCompare);
-
         UserInfo user = userInfoRepository.findByName(usernameToCompare).get();
 
-        System.out.println(Objects.equals(user.getRoles(), "ROLE_ADMIN"));
-
-//        if(Objects.equals(usernameToCompare, username)){
         if((Objects.equals(username, usernameToCompare) && Objects.equals(user.getRoles(), "ROLE_USER")) || (Objects.equals(user.getRoles(), "ROLE_MODERATOR")) || (Objects.equals(user.getRoles(), "ROLE_ADMIN"))) {
             League league = leagueRepository.findById(teamRequest.getLeagueID()).orElse(null);
             if (league == null) {
@@ -251,8 +240,4 @@ public class TeamService {
         existingFan.getSupporter().remove(existingFanOfTeam);
         fanRepository.save(existingFan);
     }
-
-//    public UserInfo getUserByToken(String token) {
-//        return userInfoRepository
-//    }
 }

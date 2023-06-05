@@ -25,21 +25,18 @@ public class AdminController {
     @PostMapping("/admin/populate-leagues")
     public String populateAllLeagues() {
         adminService.populateLeagueDB();
-
         return "Populated database";
     }
 
     @PostMapping("/admin/populate-teams")
     public String populateAllTeams() {
         adminService.populateTeamDB();
-
         return "Populated database";
     }
 
     @PostMapping("/admin/populate-fans")
     public String poulateAllFans() {
         adminService.populateFanDB();
-
         return "Populated database";
     }
 

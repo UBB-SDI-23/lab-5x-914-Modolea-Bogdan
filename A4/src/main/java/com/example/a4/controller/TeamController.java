@@ -32,8 +32,6 @@ import java.util.Objects;
 public class TeamController {
     @Autowired
     private TeamService service;
-    @Autowired
-    private UserService userService;
 
     @PostMapping
     public ResponseEntity<Team> addTeam(@RequestBody @Valid TeamRequest teamRequest, @RequestHeader("Authorization") String authorizationHeader) throws EntityNotFoundException {

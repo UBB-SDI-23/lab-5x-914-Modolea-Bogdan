@@ -17,7 +17,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "FANOF_TBL")
 public class FanOfTeam {
     @Id
-//    @GeneratedValue
     int id;
 
     @ManyToOne
