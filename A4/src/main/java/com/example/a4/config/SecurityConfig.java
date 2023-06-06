@@ -30,6 +30,13 @@ public class SecurityConfig {
         return new UserInfoUserDetailsService();
     }
 
+
+    /**
+     * Configures security settings, including CORS, authentication, and session management, in Spring.
+     * @param httpSecurity
+     * @return configured security filter chain for handling HTTP requests
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -44,11 +51,19 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * password encoder implementation
+     * @return password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * sets up an authentication provider with the necessary components for authenticating users
+     * @return
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -58,6 +73,12 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
+    /**
+     * acts as a wrapper that retrieves and returns the AuthenticationManager from the given AuthenticationConfiguration
+     * @param configuration
+     * @return the authentication manager
+     * @throws Exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

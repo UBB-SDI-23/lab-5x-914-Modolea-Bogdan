@@ -2,6 +2,9 @@ package com.example.a4.entity.message;
 
 import lombok.*;
 
+/**
+ * message entity
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

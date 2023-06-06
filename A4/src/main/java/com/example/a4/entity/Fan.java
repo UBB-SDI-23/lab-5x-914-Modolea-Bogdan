@@ -14,6 +14,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
+/**
+ * fan entity
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

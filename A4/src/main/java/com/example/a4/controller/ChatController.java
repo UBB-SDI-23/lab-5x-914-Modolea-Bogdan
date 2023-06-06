@@ -14,12 +14,22 @@ public class ChatController {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * get the public message
+     * @param message
+     * @return
+     */
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
     public Message receiveMessage(@Payload Message message){
         return message;
     }
 
+    /**
+     * get the private message
+     * @param message
+     * @return
+     */
     @MessageMapping("/private-message")
     public Message recMessage(@Payload Message message){
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private",message);

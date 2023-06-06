@@ -16,6 +16,12 @@ public class UserInfoUserDetailsService implements UserDetailsService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+    /**
+     * loading user details for authentication and authorization purposes
+     * @param username
+     * @return user with corresponding username
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserInfo> userInfo = userInfoRepository.findByName(username);

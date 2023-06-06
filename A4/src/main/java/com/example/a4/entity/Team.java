@@ -11,6 +11,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
+/**
+ * team entity
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

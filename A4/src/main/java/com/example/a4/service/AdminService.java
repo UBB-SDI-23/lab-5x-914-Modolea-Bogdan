@@ -14,11 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * the admin service implementation
+ */
 @Service
 public class AdminService {
     @Autowired
     private Environment env;
 
+    /**
+     * delete all data from all databases
+     */
     public void dropAll() {
         try {
             Connection conn = DriverManager.getConnection(
@@ -44,6 +50,9 @@ public class AdminService {
         }
     }
 
+    /**
+     * populate Leagues table in database
+     */
     public void populateLeagueDB() {
         try {
             Connection conn = DriverManager.getConnection(
@@ -65,6 +74,9 @@ public class AdminService {
         }
     }
 
+    /**
+     * populate Teams table in database
+     */
     public void populateTeamDB() {
         try {
             Connection conn = DriverManager.getConnection(
@@ -86,6 +98,9 @@ public class AdminService {
         }
     }
 
+    /**
+     * populate Fans table in database
+     */
     public void populateFanDB() {
         try {
             Connection conn = DriverManager.getConnection(

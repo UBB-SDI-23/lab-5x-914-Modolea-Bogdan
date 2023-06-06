@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+/**
+ * relation between a fan and a team
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

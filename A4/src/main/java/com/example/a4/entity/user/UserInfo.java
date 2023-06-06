@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * user entity
+ */
 @Entity
 @Data
 @AllArgsConstructor

@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * league entity
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

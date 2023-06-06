@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * the team service implementation
+ */
 @Service
 public class TeamService {
     @Autowired
@@ -35,6 +38,12 @@ public class TeamService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+    /**
+     * add a new team
+     * @param teamRequest
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Team saveTeam(TeamRequest teamRequest) throws EntityNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.equals(teamRequest.getUsername(), authentication.getName())) {
@@ -65,6 +74,11 @@ public class TeamService {
             return null;
     }
 
+    /**
+     * get all teams
+     * @return
+     * @throws EntityNotFoundException
+     */
     public List<TeamGetAll> getTeams() throws EntityNotFoundException {
         List<Team> teams = teamRepository.findAll();
         if (teams.isEmpty())
@@ -90,6 +104,12 @@ public class TeamService {
         return teamGetAlls;
     }
 
+    /**
+     * get a team by its name
+     * @param teamName
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Team getTeamByName(String teamName) throws EntityNotFoundException {
         Team team = teamRepository.findTeamByName(teamName);
         if(team == null)
@@ -98,14 +118,32 @@ public class TeamService {
         return team;
     }
 
+    /**
+     * get all teams on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<Team> findTeamsWithPagination(int offset, int pageSize) {
         return teamRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
+    /**
+     * get all teams with their number of fans on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<TeamAndNoFans> findTeamsWithNoFans(int offset, int pageSize) {
         return teamRepository.getTeamAndNoFans(PageRequest.of(offset, pageSize));
     }
 
+    /**
+     * get all teams sorted by a field
+     * @param field
+     * @return
+     * @throws EntityNotFoundException
+     */
     public List<TeamGetAll> findTeamsWithSorting(String field) throws EntityNotFoundException {
         List<Team> teams = teamRepository.findAll(Sort.by(field));
         if (teams.isEmpty())
@@ -131,6 +169,12 @@ public class TeamService {
         return teamGetAlls;
     }
 
+    /**
+     * get team by id
+     * @param id
+     * @return
+     * @throws EntityNotFoundException
+     */
     public TeamByID getTeamById(int id) throws EntityNotFoundException {
         Team team = teamRepository.findById(id).orElse(null);
         if (team == null)
@@ -149,6 +193,14 @@ public class TeamService {
         );
     }
 
+    /**
+     * update a team
+     * @param id
+     * @param teamRequest
+     * @param authorizationHeader
+     * @return
+     * @throws Exception
+     */
     public Team updateTeam(int id, TeamRequest teamRequest, String authorizationHeader) throws Exception {
         Team existingTeam = teamRepository.findById(id).orElse(null);
         if (existingTeam == null)
@@ -179,6 +231,12 @@ public class TeamService {
         throw new Exception("Not allowed");
     }
 
+    /**
+     * delete a team
+     * @param id
+     * @param authorizationHeader
+     * @throws Exception
+     */
     public void deleteTeam(int id, String authorizationHeader) throws Exception {
         Team existingTeam = teamRepository.findById(id).orElse(null);
         if (existingTeam == null)
@@ -196,6 +254,13 @@ public class TeamService {
             throw new Exception("Not allowed");
     }
 
+    /**
+     * add a fan to a team
+     * @param id
+     * @param fan
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Team saveTeamFans(int id, FanAndTeam fan) throws EntityNotFoundException {
         Team existingTeam = teamRepository.findById(id).orElse(null);
         if (existingTeam == null)
@@ -219,6 +284,12 @@ public class TeamService {
         return teamRepository.save(existingTeam);
     }
 
+    /**
+     * delete a team's fan connection
+     * @param teamID
+     * @param fanID
+     * @throws EntityNotFoundException
+     */
     public void deleteTeamFan(int teamID, int fanID) throws EntityNotFoundException {
         Fan existingFan = fanRepository.findById(fanID).orElse(null);
         if (existingFan == null)

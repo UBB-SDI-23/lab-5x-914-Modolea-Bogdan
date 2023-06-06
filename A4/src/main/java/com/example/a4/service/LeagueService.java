@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * the league service implementation
+ */
 @Service
 public class LeagueService {
     @Autowired
@@ -25,6 +28,12 @@ public class LeagueService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+    /**
+     * add a new league
+     * @param leagueRequest
+     * @return
+     * @throws EntityNotFoundException
+     */
     public League saveLeague(LeagueRequest leagueRequest) throws EntityNotFoundException {
         League newLeague = new League();
 
@@ -48,6 +57,11 @@ public class LeagueService {
         return leagueRepository.save(newLeague);
     }
 
+    /**
+     * get all leagues
+     * @return
+     * @throws EntityNotFoundException
+     */
     public List<LeagueGetAll> getLeagues() throws EntityNotFoundException{
         List<League> leagues = leagueRepository.findAll();
         if(leagues.isEmpty())
@@ -56,14 +70,32 @@ public class LeagueService {
         return ObjectMapper.mapAll(leagues, LeagueGetAll.class);
     }
 
+    /**
+     * get all leagues on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<League> findLeaguesWithPagination(int offset, int pageSize) throws EntityNotFoundException {
         return leagueRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
+    /**
+     * get all leagues with their number of teams on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<LeaguesAndNoTeams> findLeaguesAndNoTeams(int offset, int pageSize) {
         return leagueRepository.getLeaguesAndNoTeams(PageRequest.of(offset, pageSize));
     }
 
+    /**
+     * get a league by id
+     * @param id
+     * @return
+     * @throws EntityNotFoundException
+     */
     public League getLeagueById(int id) throws EntityNotFoundException{
         League league = leagueRepository.findById(id).orElse(null);
         if(league == null)
@@ -72,6 +104,14 @@ public class LeagueService {
         return league;
     }
 
+    /**
+     * update a league
+     * @param id
+     * @param leagueRequest
+     * @param authorizationHeader
+     * @return
+     * @throws Exception
+     */
     public League updateLeague(int id, LeagueRequest leagueRequest, String authorizationHeader) throws Exception {
         League existingLeague = leagueRepository.findById(id).orElse(null);
         if(existingLeague == null)
@@ -94,6 +134,12 @@ public class LeagueService {
         throw new Exception("Not allowed to update league");
     }
 
+    /**
+     * delete a league
+     * @param id
+     * @param authorizationHeader
+     * @throws Exception
+     */
     public void deleteLeague(int id, String authorizationHeader) throws Exception {
         League existingLeague = leagueRepository.findById(id).orElse(null);
         if(existingLeague == null)
@@ -112,6 +158,13 @@ public class LeagueService {
             throw new Exception("Not allowed to delete league!");
     }
 
+    /**
+     * get a league with the number of nationalities that support it
+     * @param offset
+     * @param pageSize
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Page<NationalitiesAndLeagues> getLeaguesByNations(int offset, int pageSize) throws EntityNotFoundException{
         Page<NationalitiesAndLeagues> leagues = leagueRepository.getLeaguesByNations(PageRequest.of(offset, pageSize));
         if(leagues.isEmpty())
@@ -120,6 +173,13 @@ public class LeagueService {
         return leagues;
     }
 
+    /**
+     * add a team to a league
+     * @param id
+     * @param teamIDs
+     * @return
+     * @throws EntityNotFoundException
+     */
     public League addTeamListToLeague(int id, List<Integer> teamIDs) throws EntityNotFoundException{
         League league = leagueRepository.findById(id).orElse(null);
         if(league == null)
@@ -141,6 +201,11 @@ public class LeagueService {
         return leagueRepository.save(league);
     }
 
+    /**
+     * get a league by name
+     * @param league
+     * @return
+     */
     public League getLeagueByName(String league){
         return leagueRepository.getLeagueByName(league);
     }

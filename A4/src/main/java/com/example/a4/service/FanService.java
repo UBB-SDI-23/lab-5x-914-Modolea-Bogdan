@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * the fan service implementation
+ */
 @Service
-
 public class FanService {
     @Autowired
     private FanRepository fanRepository;
@@ -33,6 +35,12 @@ public class FanService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+    /**
+     * add a new fan
+     * @param fanRequest
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Fan saveFan(FanRequest fanRequest) throws EntityNotFoundException {
         Page<Fan> data = findFansWithPagination(0, 1);
         int totalElems = (int) data.getTotalElements();
@@ -54,6 +62,11 @@ public class FanService {
         return fanRepository.save(newFan);
     }
 
+    /**
+     * get all fans
+     * @return
+     * @throws EntityNotFoundException
+     */
     public List<FanGetAll> getFans() throws EntityNotFoundException {
         List<Fan> fans = fanRepository.findAll();
         if (fans.isEmpty())
@@ -62,25 +75,48 @@ public class FanService {
         return ObjectMapper.mapAll(fans, FanGetAll.class);
     }
 
+    /**
+     * get all fans on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Page<Fan> findFansWithPagination(int offset, int pageSize) throws EntityNotFoundException {
         Page<Fan> fans = fanRepository.findAll(PageRequest.of(offset, pageSize));
         return fans;
     }
 
+    /**
+     * get all fams with their number of teams on page offset with pageSize entities per page
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<FanAndNoTeams> findFanAndNoTeams(int offset, int pageSize) {
         Page<FanAndNoTeams> fanAndNoTeams = fanRepository.findFanAndNoTeams(PageRequest.of(offset, pageSize));
         return fanAndNoTeams;
     }
 
+    /**
+     * get the every nationality and its counter
+     * @param offset
+     * @param pageSize
+     * @return
+     */
     public Page<NumberNationalities> findNumberNationalities(int offset, int pageSize) {
         Page<NumberNationalities> numberNationalities = fanRepository.findNumberNationalities(PageRequest.of(offset, pageSize));
         return numberNationalities;
     }
 
+    /**
+     * get a fan by id
+     * @param id
+     * @return
+     * @throws EntityNotFoundException
+     */
     public FanByID getFanById(int id) throws EntityNotFoundException {
         Fan fan = fanRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("No fan found with id %d", id)));
-//        if (fan == null)
-//            throw new EntityNotFoundException(String.format("No fan found with id %d", id));
 
         return new FanByID(
                 fan.getFid(),
@@ -93,6 +129,14 @@ public class FanService {
         );
     }
 
+    /**
+     * update a fan
+     * @param id
+     * @param fanRequest
+     * @param authorizationHeader
+     * @return
+     * @throws Exception
+     */
     public Fan updateFan(int id, FanRequest fanRequest, String authorizationHeader) throws Exception {
         Fan existingFan = fanRepository.findById(id).orElse(null);
         if (existingFan == null)
@@ -116,6 +160,12 @@ public class FanService {
         throw new Exception("Not allowed to update fan");
     }
 
+    /**
+     * delete a fan
+     * @param id
+     * @param authorizationHeader
+     * @throws Exception
+     */
     public void deleteFan(int id, String authorizationHeader) throws Exception {
         Fan existingFan = fanRepository.findById(id).orElse(null);
         if (existingFan == null)
@@ -132,6 +182,12 @@ public class FanService {
             throw new Exception("Not allowed to delete fan");
     }
 
+    /**
+     * delete a team's fan connection
+     * @param fanID
+     * @param teamID
+     * @throws EntityNotFoundException
+     */
     public void deleteFanOfTeam(int fanID, int teamID) throws EntityNotFoundException {
         Fan existingFan = fanRepository.findById(fanID).orElse(null);
         if (existingFan == null)
@@ -154,15 +210,29 @@ public class FanService {
         fanRepository.save(existingFan);
     }
 
+    /**
+     * filter all fans by age
+     * @param age
+     * @param offset
+     * @param pageSize
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Page<FanGetAll> filterFansByAge(int age, int offset, int pageSize) throws EntityNotFoundException {
         Page<FanGetAll> fans = fanRepository.filterFansByAge(age, PageRequest.of(offset, pageSize));
         if (fans.isEmpty())
             throw new EntityNotFoundException(String.format("No fan with age greater than %d was found!", age));
 
         return fans;
-//        return ObjectMapper.mapAll(fans, FanGetAll.class);
     }
 
+    /**
+     * add a fan to a team
+     * @param id
+     * @param fan
+     * @return
+     * @throws EntityNotFoundException
+     */
     public Fan addFanToTeam(int id, FanOfTeam fan) throws EntityNotFoundException {
         Fan existingFan = fanRepository.findById(id).orElse(null);
         if (existingFan == null)
@@ -182,6 +252,10 @@ public class FanService {
         return fanRepository.save(existingFan);
     }
 
+    /**
+     * get every year and the number of fans that appeared
+     * @return
+     */
     public List<FansAndCounter> findFansAndCounter() {
         List<FansAndCounter> fansAndCounters = fanRepository.getFansAndCounter();
         List<FansAndCounter> ans = new ArrayList<>();
@@ -209,6 +283,10 @@ public class FanService {
         return ans;
     }
 
+    /**
+     * predict the number of fans for the next 3 years
+     * @return
+     */
     public List<Integer> getFansAndCounter() {
         List<FansAndCounter> fansAndCounters = fanRepository.getFansAndCounter();
 
@@ -243,14 +321,14 @@ public class FanService {
         org.apache.commons.math3.stat.regression.SimpleRegression lr = new org.apache.commons.math3.stat.regression.SimpleRegression();
         lr.addObservations(X_train, y);
 
-        double predictedSalary1 = lr.predict(2024);
-        double predictedSalary2 = lr.predict(2025);
-        double predictedSalary3 = lr.predict(2026);
+        double predictedFans1 = lr.predict(2024);
+        double predictedFans2 = lr.predict(2025);
+        double predictedFans3 = lr.predict(2026);
 
         List<Integer> ans = new ArrayList<>();
-        ans.add((int) Math.round(predictedSalary1));
-        ans.add((int) Math.round(predictedSalary2));
-        ans.add((int) Math.round(predictedSalary3));
+        ans.add((int) Math.round(predictedFans1));
+        ans.add((int) Math.round(predictedFans2));
+        ans.add((int) Math.round(predictedFans3));
 
         return ans;
     }

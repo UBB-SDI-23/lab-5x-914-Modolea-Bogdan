@@ -16,6 +16,10 @@ public class UserInfoUserDetails implements UserDetails {
     private List<GrantedAuthority> authorities;
     private boolean enabled;
 
+    /**
+     * constructor for class UserInfoUserDetails
+     * @param userInfo
+     */
     public UserInfoUserDetails(UserInfo userInfo) {
         name = userInfo.getName();
         password = userInfo.getPassword();
@@ -24,6 +28,12 @@ public class UserInfoUserDetails implements UserDetails {
                 .collect(Collectors.toList());
         enabled = userInfo.isEnabled();
     }
+
+    /**
+     *
+     * Getters and Setters
+     *
+     */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
